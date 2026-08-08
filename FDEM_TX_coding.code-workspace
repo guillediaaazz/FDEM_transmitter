@@ -9,5 +9,7 @@
 			"path": "Firmware"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Web_UI"
+	}
 }
