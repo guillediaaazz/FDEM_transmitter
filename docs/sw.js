@@ -1,6 +1,6 @@
 const CACHE_NAME = 'fdem-v1';
 const ASSETS = [
-  './FDEM_transmitter_control.html',
+  './Index.html',
   './manifest.json'
 ];
 
