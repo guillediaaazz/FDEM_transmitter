@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FDEM Coil Controller</title>
+    <style>
+        :root {
+            --bg: #121212; --card: #1e1e1e; --text: #ffffff;
+            --primary: #0a84ff; --danger: #ff453a; --success: #32d74b;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg); color: var(--text);
+            margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .container { width: 100%; max-width: 400px; }
+        .card {
+            background-color: var(--card); border-radius: 12px;
+            padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h2, h3 { margin-top: 0; }
+        .btn {
+            background-color: var(--primary); color: white;
+            border: none; border-radius: 8px;
+            padding: 12px 20px; font-size: 16px; font-weight: bold;
+            width: 100%; cursor: pointer; margin-bottom: 10px;
+        }
+        .btn-calibrate { background-color: #ff9f0a; }
+        .btn:active { opacity: 0.8; }
+        
+        .control-group { margin-bottom: 20px; }
+        .label-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); }
+        .num-input {
+            background: #2c2c2e; border: 1px solid #3a3a3c;
+            color: white; border-radius: 6px; padding: 4px 8px;
+            width: 60px; text-align: right;
+        }
+
+        /* Segmented Control for Waveform */
+        .segmented-control {
+            display: flex; background: #2c2c2e; border-radius: 8px; overflow: hidden;
+        }
+        .seg-btn {
+            flex: 1; padding: 8px; text-align: center; cursor: pointer;
+            border: none; background: transparent; color: #8e8e93; font-weight: bold;
+        }
+        .seg-btn.active { background: #3a3a3c; color: white; }
+
+        /* Battery Dashboard */
+        .batt-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            text-align: center; margin-bottom: 10px;
+        }
+        .batt-box {
+            background: #2c2c2e; padding: 10px; border-radius: 8px;
+        }
+        .batt-val { font-size: 20px; font-weight: bold; margin-top: 4px; }
+        .batt-pct { 
+            background: #2c2c2e; padding: 10px; border-radius: 8px; 
+            text-align: center; font-size: 18px; font-weight: bold;
+            color: var(--success);
+        }
+
+        .terminal {
+            background-color: #000; color: #0f0; font-family: monospace;
+            padding: 10px; border-radius: 8px; height: 100px;
+            overflow-y: auto; font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button class="btn" id="connectBtn">Connect to FDEM Transmitter</button>
+
+    <!-- Battery Status Dashboard -->
+    <div class="card" id="batteryCard" style="opacity: 0.5;">
+        <h3>System Power</h3>
+        <div class="batt-grid">
+            <div class="batt-box">
+                <div>+12V Rail</div>
+                <div class="batt-val" id="valPosRail">-- V</div>
+            </div>
+            <div class="batt-box">
+                <div>-12V Rail</div>
+                <div class="batt-val" id="valNegRail">-- V</div>
+            </div>
+        </div>
+        <div class="batt-pct">Est. Battery: <span id="valPct">--</span>%</div>
+    </div>
+
+    <div class="card">
+        <h3>Signal Generator</h3>
+        
+        <div class="control-group">
+            <div class="label-row">
+                <label>Frequency (Hz)</label>
+                <input type="number" id="freqNum" class="num-input" value="1000" min="0.1" max="8000" step="0.1">
+            </div>
+            <input type="range" id="freqSlider" min="1" max="8000" value="1000">
+        </div>
+
+        <div class="control-group">
+            <div class="label-row">
+                <label>Amplitude (Vpp)</label>
+                <input type="number" id="ampNum" class="num-input" value="10.0" min="0" max="20.0" step="0.1">
+            </div>
+            <input type="range" id="ampSlider" min="0" max="20" value="10" step="0.1">
+        </div>
+
+        <div class="control-group">
+            <div class="label-row">
+                <label>Waveform</label>
+            </div>
+            <div class="segmented-control">
+                <button class="seg-btn active" id="waveSine">Sine</button>
+                <button class="seg-btn" id="waveTri">Triangle</button>
+            </div>
+        </div>
+
+        <button class="btn btn-calibrate" id="calBtn">Run Auto-Calibration</button>
+    </div>
+
+    <div class="card">
+        <h3>Console Log</h3>
+        <div class="terminal" id="consoleLog">Ready...<br></div>
+    </div>
+</div>
+
+<script>
+    // UUIDs for Nordic UART Service (Standard for ESP32 BLE Serial)
+    const serviceUuid = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
+    const txCharacteristicUuid = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"; // Phone TX -> ESP32 RX
+    const rxCharacteristicUuid = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"; // ESP32 TX -> Phone RX
+
+    let bleDevice, txCharacteristic;
+
+    // UI Elements
+    const logBox = document.getElementById('consoleLog');
+    const fSlider = document.getElementById('freqSlider');
+    const fNum = document.getElementById('freqNum');
+    const aSlider = document.getElementById('ampSlider');
+    const aNum = document.getElementById('ampNum');
+    const waveSine = document.getElementById('waveSine');
+    const waveTri = document.getElementById('waveTri');
+    const calBtn = document.getElementById('calBtn');
+
+    let currentWave = 'S';
+
+    function log(text) {
+        logBox.innerHTML += text + "<br>";
+        logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    // Sync Sliders and Inputs
+    fSlider.oninput = () => { fNum.value = fSlider.value; sendCommand(); }
+    fNum.onchange = () => { fSlider.value = fNum.value; sendCommand(); }
+    aSlider.oninput = () => { aNum.value = aSlider.value; sendCommand(); }
+    aNum.onchange = () => { aSlider.value = aNum.value; sendCommand(); }
+
+    // Waveform Buttons
+    waveSine.onclick = () => { currentWave = 'S'; waveSine.classList.add('active'); waveTri.classList.remove('active'); sendCommand(); }
+    waveTri.onclick = () => { currentWave = 'T'; waveTri.classList.add('active'); waveSine.classList.remove('active'); sendCommand(); }
+    
+    // Calibrate Button
+    calBtn.onclick = () => {
+        log("> TX: CMD:CALIBRATE");
+        writeToBLE("CMD:CALIBRATE\n");
+    }
+
+    function sendCommand() {
+        let cmd = `F:${fNum.value} A:${aNum.value} W:${currentWave}\n`;
+        log("> TX: " + cmd.trim());
+        writeToBLE(cmd);
+    }
+
+    async function writeToBLE(data) {
+        if (!txCharacteristic) return;
+        let encoder = new TextEncoder();
+        try {
+            await txCharacteristic.writeValue(encoder.encode(data));
+        } catch (err) {
+            log("Write Error: " + err);
+        }
+    }
+
+    // Handle Incoming Messages from ESP32
+    function handleIncomingData(event) {
+        let value = new TextDecoder().decode(event.target.value);
+        let msg = value.trim();
+        log("< RX: " + msg);
+
+        // Expected format from ESP32: "BAT:12.1,-11.9,85"
+        if(msg.startsWith("BAT:")) {
+            let parts = msg.substring(4).split(',');
+            if(parts.length === 3) {
+                document.getElementById('valPosRail').innerText = parts[0] + " V";
+                document.getElementById('valNegRail').innerText = parts[1] + " V";
+                document.getElementById('valPct').innerText = parts[2];
+                
+                // Change color if battery is low
+                let pct = parseInt(parts[2]);
+                document.getElementById('valPct').style.color = pct < 20 ? "var(--danger)" : "var(--success)";
+            }
+        }
+    }
+
+    // Bluetooth Connect Logic
+    document.getElementById('connectBtn').addEventListener('click', async () => {
+        try {
+            log("Requesting BLE Device...");
+            bleDevice = await navigator.bluetooth.requestDevice({
+                filters: [{ services: [serviceUuid] }]
+            });
+
+            log("Connecting to GATT Server...");
+            const server = await bleDevice.gatt.connect();
+
+            log("Getting Service...");
+            const service = await server.getPrimaryService(serviceUuid);
+
+            log("Getting Characteristics...");
+            txCharacteristic = await service.getCharacteristic(txCharacteristicUuid);
+            let rxCharacteristic = await service.getCharacteristic(rxCharacteristicUuid);
+
+            // Subscribe to notifications to receive data from ESP32
+            await rxCharacteristic.startNotifications();
+            rxCharacteristic.addEventListener('characteristicvaluechanged', handleIncomingData);
+
+            log("Connected Successfully!");
+            document.getElementById('connectBtn').style.backgroundColor = "var(--success)";
+            document.getElementById('connectBtn').innerText = "Connected";
+            document.getElementById('batteryCard').style.opacity = "1";
+            
+            sendCommand(); // Send initial state
+
+        } catch (error) {
+            log("Connection Failed: " + error);
+        }
+    });
+</script>
+</body>
+</html>
