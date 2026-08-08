@@ -1,0 +1,15 @@
+{
+  "name": "FDEM TX Controller",
+  "short_name": "FDEM",
+  "start_url": "./FDEM_transmitter_control.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/8/82/Gears_icon.svg", 
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}

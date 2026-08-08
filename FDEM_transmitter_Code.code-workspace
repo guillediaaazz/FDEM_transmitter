@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "Bluetooth_web_app",
+			"path": "Bluetooth_web_app"
+		},
+		{
+			"name": "Firmware",
+			"path": "Firmware"
+		}
+	],
+	"settings": {}
+}
