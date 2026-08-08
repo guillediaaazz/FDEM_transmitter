@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FDEM Coil Controller</title>
+    
+    <!-- Link to the PWA Manifest for offline use -->
+    <link rel="manifest" href="manifest.json">
+    
+    <style>
+        :root {
+            --bg: #121212; --card: #1e1e1e; --text: #ffffff;
+            --primary: #0a84ff; --danger: #ff453a; --success: #32d74b; --usb: #5e5ce6;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg); color: var(--text);
+            margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .container { width: 100%; max-width: 400px; }
+        .card {
+            background-color: var(--card); border-radius: 12px;
+            padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h2, h3 { margin-top: 0; }
+        
+        /* Buttons */
+        .btn {
+            background-color: var(--primary); color: white;
+            border: none; border-radius: 8px;
+            padding: 12px 20px; font-size: 16px; font-weight: bold;
+            width: 100%; cursor: pointer; margin-bottom: 10px;
+        }
+        .btn-usb { background-color: var(--usb); }
+        .btn-calibrate { background-color: #ff9f0a; margin-top: 15px;}
+        .btn:active { opacity: 0.8; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* Controls */
+        .control-group { margin-bottom: 20px; }
+        .label-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); }
+        .num-input {
+            background: #2c2c2e; border: 1px solid #3a3a3c;
+            color: white; border-radius: 6px; padding: 4px 8px;
+            width: 70px; text-align: right;
+        }
+
+        /* Segmented Control for Waveform */
+        .segmented-control {
+            display: flex; background: #2c2c2e; border-radius: 8px; overflow: hidden;
+        }
+        .seg-btn {
+            flex: 1; padding: 10px; text-align: center; cursor: pointer;
+            border: none; background: transparent; color: #8e8e93; font-weight: bold;
+        }
+        .seg-btn.active { background: #3a3a3c; color: white; }
+
+        /* Battery Dashboard */
+        .batt-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            text-align: center; margin-bottom: 10px;
+        }
+        .batt-box { background: #2c2c2e; padding: 10px; border-radius: 8px; }
+        .batt-val { font-size: 20px; font-weight: bold; margin-top: 4px; }
+        .batt-pct { 
+            background: #2c2c2e; padding: 10px; border-radius: 8px; 
+            text-align: center; font-size: 18px; font-weight: bold;
+            color: var(--success);
+        }
+
+        /* Terminal Console */
+        .terminal {
+            background-color: #000; color: #0f0; font-family: monospace;
+            padding: 10px; border-radius: 8px; height: 120px;
+            overflow-y: auto; font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Connection Buttons -->
+    <button class="btn" id="connectBleBtn">Connect via Bluetooth (Field)</button>
+    <button class="btn btn-usb" id="connectUsbBtn">Connect via USB-C (Lab)</button>
+
+    <!-- Battery Status Dashboard -->
+    <div class="card" id="batteryCard" style="opacity: 0.4;">
+        <h3>System Power</h3>
+        <div class="batt-grid">
+            <div class="batt-box">
+                <div>+12V Rail</div>
+                <div class="batt-val" id="valPosRail">-- V</div>
+            </div>
+            <div class="batt-box">
+                <div>-12V Rail</div>
+                <div class="batt-val" id="valNegRail">-- V</div>
+            </div>
+        </div>
+        <div class="batt-pct">Est. Battery: <span id="valPct">--</span>%</div>
+    </div>
+
+    <!-- Controls -->
+    <div class="card" id="controlsCard" style="opacity: 0.4; pointer-events: none;">
+        <h3>Signal Generator</h3>
+        
+        <div class="control-group">
+            <div class="label-row">
+                <label>Frequency (Hz)</label>
+                <input type="number" id="freqNum" class="num-input" value="1000" min="1" max="8000" step="0.1">
+            </div>
+            <input type="range" id="freqSlider" min="1" max="8000" value="1000" step="0.1">
+        </div>
+
+        <div class="control-group">
+            <div class="label-row">
+                <label>Amplitude (Vpp)</label>
+                <input type="number" id="ampNum" class="num-input" value="10.0" min="0" max="20.0" step="0.1">
+            </div>
+            <input type="range" id="ampSlider" min="0" max="20" value="10" step="0.1">
+        </div>
+
+        <div class="control-group">
+            <div class="label-row">
+                <label>Waveform</label>
+            </div>
+            <div class="segmented-control">
+                <button class="seg-btn active" id="waveSine">Sine</button>
+                <button class="seg-btn" id="waveTri">Triangle</button>
+            </div>
+        </div>
+
+        <button class="btn btn-calibrate" id="calBtn">Run Auto-Calibration</button>
+    </div>
+
+    <!-- Console -->
+    <div class="card">
+        <h3>Console Log</h3>
+        <div class="terminal" id="consoleLog">Ready...<br></div>
+    </div>
+</div>
+
+<script>
+    // --- 1. PWA OFFLINE REGISTRATION ---
+    if ('serviceWorker' in navigator) {
+        // Only attempt registration if running on a real web server (HTTPS or localhost)
+        if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log("PWA Service Worker Registered"))
+                .catch(err => console.error("SW Registration failed:", err));
+        } else {
+            console.log("PWA Service Worker registration skipped (running in local/preview mode).");
+        }
+    }
+
+    // --- 2. GLOBAL VARIABLES ---
+    const logBox = document.getElementById('consoleLog');
+    function log(text) { logBox.innerHTML += text + "<br>"; logBox.scrollTop = logBox.scrollHeight; }
+
+    let activeConnection = null; // 'BLE' or 'USB'
+    
+    // BLE Variables
+    let bleDevice, txCharacteristic, rxCharacteristic;
+    const serviceUuid = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
+    const txUuid = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"; // Phone TX -> ESP32 RX
+    const rxUuid = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"; // ESP32 TX -> Phone RX
+
+    // USB Variables
+    let serialPort, serialWriter;
+
+    // UI Elements
+    const fSlider = document.getElementById('freqSlider');
+    const fNum = document.getElementById('freqNum');
+    const aSlider = document.getElementById('ampSlider');
+    const aNum = document.getElementById('ampNum');
+    const waveSine = document.getElementById('waveSine');
+    const waveTri = document.getElementById('waveTri');
+    const calBtn = document.getElementById('calBtn');
+    let currentWave = 'S';
+
+    // --- 3. UI EVENT LISTENERS ---
+    fSlider.oninput = () => { fNum.value = fSlider.value; sendSettings(); }
+    fNum.onchange = () => { fSlider.value = fNum.value; sendSettings(); }
+    aSlider.oninput = () => { aNum.value = aSlider.value; sendSettings(); }
+    aNum.onchange = () => { aSlider.value = aNum.value; sendSettings(); }
+
+    waveSine.onclick = () => { currentWave = 'S'; waveSine.classList.add('active'); waveTri.classList.remove('active'); sendSettings(); }
+    waveTri.onclick = () => { currentWave = 'T'; waveTri.classList.add('active'); waveSine.classList.remove('active'); sendSettings(); }
+
+    calBtn.onclick = () => {
+        writeToDevice("CMD:CALIBRATE\n");
+    }
+
+    function unlockUI() {
+        document.getElementById('batteryCard').style.opacity = "1";
+        document.getElementById('controlsCard').style.opacity = "1";
+        document.getElementById('controlsCard').style.pointerEvents = "auto";
+    }
+
+    // --- 4. COMMUNICATIONS ---
+    async function writeToDevice(cmd) {
+        log("> TX: " + cmd.trim());
+        let encoder = new TextEncoder();
+        let data = encoder.encode(cmd);
+
+        if (activeConnection === 'BLE' && txCharacteristic) {
+            try { await txCharacteristic.writeValue(data); } 
+            catch (e) { log("BLE Write Error: " + e); }
+        } 
+        else if (activeConnection === 'USB' && serialWriter) {
+            try { await serialWriter.write(data); } 
+            catch (e) { log("USB Write Error: " + e); }
+        } 
+    }
+
+    function sendSettings() {
+        let cmd = `F:${fNum.value} A:${aNum.value} W:${currentWave}\n`;
+        writeToDevice(cmd);
+    }
+
+    function handleIncomingMessage(msg) {
+        msg = msg.trim();
+        if(!msg) return;
+        
+        log("< RX: " + msg);
+
+        // Parse Battery Data: "BAT:12.1,-11.9,85"
+        if(msg.startsWith("BAT:")) {
+            let parts = msg.substring(4).split(',');
+            if(parts.length === 3) {
+                document.getElementById('valPosRail').innerText = parts[0] + " V";
+                document.getElementById('valNegRail').innerText = parts[1] + " V";
+                
+                let pct = parseInt(parts[2]);
+                document.getElementById('valPct').innerText = pct;
+                document.getElementById('valPct').style.color = pct < 20 ? "var(--danger)" : "var(--success)";
+            }
+        }
+    }
+
+    // --- 5. BLUETOOTH LOGIC ---
+    document.getElementById('connectBleBtn').addEventListener('click', async () => {
+        try {
+            log("Requesting BLE Device...");
+            bleDevice = await navigator.bluetooth.requestDevice({ filters: [{ services: [serviceUuid] }] });
+            const server = await bleDevice.gatt.connect();
+            const service = await server.getPrimaryService(serviceUuid);
+            
+            txCharacteristic = await service.getCharacteristic(txUuid);
+            rxCharacteristic = await service.getCharacteristic(rxUuid);
+
+            await rxCharacteristic.startNotifications();
+            rxCharacteristic.addEventListener('characteristicvaluechanged', (e) => {
+                let msg = new TextDecoder().decode(e.target.value);
+                handleIncomingMessage(msg);
+            });
+
+            activeConnection = 'BLE';
+            log("BLE Connected!");
+            
+            // UI Updates
+            document.getElementById('connectBleBtn').innerText = "BLE Connected";
+            document.getElementById('connectBleBtn').style.backgroundColor = "var(--success)";
+            document.getElementById('connectUsbBtn').disabled = true;
+            unlockUI();
+            sendSettings();
+
+        } catch (error) { log("BLE Error: " + error); }
+    });
+
+    // --- 6. USB SERIAL LOGIC ---
+    document.getElementById('connectUsbBtn').addEventListener('click', async () => {
+        if (!('serial' in navigator)) {
+            log("Error: Web Serial API not supported in this browser.");
+            return;
+        }
+        try {
+            log("Requesting USB Port...");
+            serialPort = await navigator.serial.requestPort();
+            await serialPort.open({ baudRate: 115200 });
+            
+            serialWriter = serialPort.writable.getWriter();
+            activeConnection = 'USB';
+            log("USB Connected!");
+            
+            // UI Updates
+            document.getElementById('connectUsbBtn').innerText = "USB Connected";
+            document.getElementById('connectUsbBtn').style.backgroundColor = "var(--success)";
+            document.getElementById('connectBleBtn').disabled = true;
+            unlockUI();
+            sendSettings();
+
+            // Start listening loop
+            listenToSerial();
+
+        } catch (error) { log("USB Error: " + error); }
+    });
+
+    async function listenToSerial() {
+        const textDecoder = new TextDecoderStream();
+        const readableStreamClosed = serialPort.readable.pipeTo(textDecoder.writable);
+        const reader = textDecoder.readable.getReader();
+
+        let buffer = "";
+        try {
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                
+                // Serial data might arrive in chunks, accumulate until newline
+                buffer += value;
+                if (buffer.includes('\n')) {
+                    let messages = buffer.split('\n');
+                    for (let i = 0; i < messages.length - 1; i++) {
+                        handleIncomingMessage(messages[i]);
+                    }
+                    buffer = messages[messages.length - 1]; // Keep remainder
+                }
+            }
+        } catch (error) { log("Serial Read Error: " + error); }
+    }
+</script>
+</body>
+</html>
