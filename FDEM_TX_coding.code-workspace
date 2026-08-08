@@ -1,15 +1,13 @@
 {
 	"folders": [
 		{
-			"name": "Web_UI",
-			"path": "Web_UI"
+			"name": "docs",
+			"path": "docs"
 		},
 		{
 			"name": "Firmware",
 			"path": "Firmware"
 		}
 	],
-	"settings": {
-		"liveServer.settings.multiRootWorkspaceName": "Web_UI"
-	}
+	"settings": {}
 }
