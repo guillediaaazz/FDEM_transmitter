@@ -1,7 +1,7 @@
 {
   "name": "FDEM TX Controller",
   "short_name": "FDEM",
-  "start_url": "./Index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#121212",

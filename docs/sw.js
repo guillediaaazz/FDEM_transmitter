@@ -1,6 +1,6 @@
 const CACHE_NAME = 'fdem-v1';
 const ASSETS = [
-  './Index.html',
+  './index.html',
   './manifest.json'
 ];
 
