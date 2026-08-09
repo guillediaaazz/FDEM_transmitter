@@ -191,7 +191,7 @@
     waveTri.onclick = () => { currentWave = 'T'; waveTri.classList.add('active'); waveSine.classList.remove('active'); sendSettings(); }
 
     calBtn.onclick = () => {
-        writeToDevice("CMD:CALIBRATE\n");
+        writeToDevice("CAL\n");
     }
 
     function unlockUI() {
