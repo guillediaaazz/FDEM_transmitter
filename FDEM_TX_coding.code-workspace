@@ -1,6 +1,14 @@
 {
 	"folders": [
 		{
+			"name": "datasheets",
+			"path": "Hardware/datasheets"
+		},
+		{
+			"name": "User_Interface",
+			"path": "User_Interface"
+		},
+		{
 			"name": "docs",
 			"path": "docs"
 		},
