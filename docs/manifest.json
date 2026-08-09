@@ -1,15 +1,25 @@
 {
+  "id": "./",
   "name": "FDEM TX Controller",
-  "short_name": "FDEM",
-  "start_url": "./index.html",
+  "short_name": "FDEM TX",
+  "description": "Offline-capable field controller for the FDEM transmitter.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#121212",
-  "theme_color": "#121212",
+  "background_color": "#09121d",
+  "theme_color": "#09121d",
   "icons": [
     {
-      "src": "https://upload.wikimedia.org/wikipedia/commons/8/82/Gears_icon.svg", 
+      "src": "./assets/icons/fdem-192.svg",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icons/fdem-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }

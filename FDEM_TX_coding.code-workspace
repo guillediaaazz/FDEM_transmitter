@@ -17,5 +17,7 @@
 			"path": "Firmware"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "docs"
+	}
 }

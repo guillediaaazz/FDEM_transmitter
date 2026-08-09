@@ -10,23 +10,23 @@ namespace Config {
 constexpr int PIN_UNASSIGNED = -1;
 
 // ---- Pin assignments: fill these before connecting the hardware. ----
-constexpr int PIN_SPI_SCK = PIN_UNASSIGNED;
-constexpr int PIN_SPI_MOSI = PIN_UNASSIGNED;
+constexpr int PIN_SPI_SCK = 33;
+constexpr int PIN_SPI_MOSI = 32;
 constexpr int PIN_SPI_MISO = PIN_UNASSIGNED;  // Not used by these write-only ICs.
-constexpr int PIN_AD9837_FSYN = PIN_UNASSIGNED;
-constexpr int PIN_AD5160_CS = PIN_UNASSIGNED;
-constexpr int PIN_MCP4822_CS = PIN_UNASSIGNED;
+constexpr int PIN_AD9837_FSYN = 27;
+constexpr int PIN_AD5160_CS = 26;
+constexpr int PIN_MCP4822_CS = 25;
 
-constexpr int PIN_ADC_POSITIVE_RAIL = PIN_UNASSIGNED;
-constexpr int PIN_ADC_NEGATIVE_RAIL = PIN_UNASSIGNED;
-constexpr int PIN_ADC_OFFSET_FEEDBACK = PIN_UNASSIGNED;
+constexpr int PIN_ADC_POSITIVE_RAIL = 36;
+constexpr int PIN_ADC_NEGATIVE_RAIL = 39;
+constexpr int PIN_ADC_OFFSET_FEEDBACK = 34;
 
-constexpr int PIN_LED_POSITIVE_GREEN = PIN_UNASSIGNED;
-constexpr int PIN_LED_POSITIVE_RED = PIN_UNASSIGNED;
-constexpr int PIN_LED_NEGATIVE_GREEN = PIN_UNASSIGNED;
-constexpr int PIN_LED_NEGATIVE_RED = PIN_UNASSIGNED;
-constexpr int PIN_LED_OUTPUT = PIN_UNASSIGNED;
-constexpr int PIN_LED_BLUETOOTH = PIN_UNASSIGNED;
+constexpr int PIN_LED_POSITIVE_GREEN = 18;
+constexpr int PIN_LED_POSITIVE_RED = 19;
+constexpr int PIN_LED_NEGATIVE_GREEN = 4;
+constexpr int PIN_LED_NEGATIVE_RED = 16;
+constexpr int PIN_LED_OUTPUT = 13;
+constexpr int PIN_LED_BLUETOOTH = 14;
 
 // ---- Serial and BLE ----
 constexpr uint32_t SERIAL_BAUD = 115200;
@@ -42,6 +42,7 @@ constexpr uint32_t BATTERY_TELEMETRY_INTERVAL_MS = 1000;
 constexpr float DDS_REFERENCE_CLOCK_HZ = 16000000.0f;
 constexpr float DDS_OUTPUT_VPP = 0.600f;
 constexpr float PRE_DIGIPOT_BUFFER_GAIN = 2.0f;
+
 // Measure the closed-loop LM1875 gain and replace this nominal value.
 constexpr float POWER_STAGE_GAIN_V_V = 16.667f;
 constexpr float MIN_FREQUENCY_HZ = 1.0f;
@@ -61,6 +62,7 @@ constexpr float FEEDBACK_BIAS_DAC_VOLTS = 0.2895f;  // MCP4822 channel A
 // ---- Output offset feedback loop ----
 constexpr float OFFSET_FEEDBACK_GAIN = 4.7f;
 constexpr float OFFSET_FEEDBACK_TARGET_VOLTS = 1.650f;
+
 // +1 means increasing DAC-B code raises the measured ADC voltage; -1 means it lowers it.
 constexpr int OFFSET_CORRECTION_POLARITY = -1;
 constexpr int OFFSET_CORRECTION_LIMIT_CODES = 600;
