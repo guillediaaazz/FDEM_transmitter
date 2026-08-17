@@ -19,6 +19,10 @@ class WaveEngine {
   void setStoredCorrection(int correctionCodes);
   void startCalibration();
   void updateOffset(float feedbackVolts, uint32_t now);
+  void runDdsKnownGoodTest();
+  void setDdsTraceEnabled(bool enabled);
+  void setDdsReset(bool reset);
+  AD9837::Diagnostics ddsDiagnostics() const;
 
   bool canProduceAmplitude(float requestedVpp) const;
   bool isOutputActive() const;

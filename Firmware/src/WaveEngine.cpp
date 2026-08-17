@@ -18,7 +18,7 @@ bool WaveEngine::begin() {
   attenuator_.begin();
   dac_.begin();
   dac_.setVoltage(MCP4822::Channel::A, Config::FEEDBACK_BIAS_DAC_VOLTS);
-  dds_.setFrequency(frequencyHz_);
+  dds_.setFrequency(frequencyHz_, Config::DDS_RESET_AROUND_FREQUENCY_WRITES);
   dds_.setWaveform(AD9837::Waveform::Sine);
   dds_.setReset(false);
   ready_ = true;
@@ -29,7 +29,7 @@ bool WaveEngine::begin() {
 bool WaveEngine::setFrequency(float frequencyHz) {
   if (frequencyHz < Config::MIN_FREQUENCY_HZ || frequencyHz > Config::MAX_FREQUENCY_HZ) return false;
   frequencyHz_ = frequencyHz;
-  if (ready_) dds_.setFrequency(frequencyHz_);
+  if (ready_) dds_.setFrequency(frequencyHz_, Config::DDS_RESET_AROUND_FREQUENCY_WRITES);
   return true;
 }
 
@@ -78,6 +78,25 @@ void WaveEngine::startCalibration() {
   calibrationSteps_ = 0;
   settledSteps_ = 0;
   lastOffsetUpdateMs_ = 0;
+}
+
+void WaveEngine::runDdsKnownGoodTest() {
+  if (!ready_) return;
+  frequencyHz_ = 1000.0f;
+  waveform_ = Waveform::Sine;
+  dds_.runKnownGoodTest();
+}
+
+void WaveEngine::setDdsTraceEnabled(bool enabled) {
+  dds_.setTraceEnabled(enabled);
+}
+
+void WaveEngine::setDdsReset(bool reset) {
+  dds_.setReset(reset);
+}
+
+AD9837::Diagnostics WaveEngine::ddsDiagnostics() const {
+  return dds_.diagnostics();
 }
 
 void WaveEngine::updateOffset(float feedbackVolts, uint32_t now) {

@@ -37,6 +37,8 @@ constexpr char NUS_RX_UUID[] = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";  // Clien
 constexpr char NUS_TX_UUID[] = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";  // ESP32 -> client
 constexpr size_t MAX_COMMAND_LENGTH = 128;
 constexpr uint32_t BATTERY_TELEMETRY_INTERVAL_MS = 1000;
+// Keep a terminal usable at boot. The web UI enables USB telemetry explicitly.
+constexpr bool USB_TELEMETRY_ENABLED_AT_BOOT = false;
 
 // ---- Signal path ----
 constexpr float DDS_REFERENCE_CLOCK_HZ = 16000000.0f;
@@ -49,6 +51,9 @@ constexpr float MIN_FREQUENCY_HZ = 1.0f;
 constexpr float MAX_FREQUENCY_HZ = 8000.0f;
 constexpr float MIN_OUTPUT_VPP = 0.0f;
 constexpr float MAX_OUTPUT_VPP = 20.0f;
+// Keep the DAC at midscale while every new FREQ0 word is loaded. This is not
+// required for normal DDS operation, but is useful during board bring-up.
+constexpr bool DDS_RESET_AROUND_FREQUENCY_WRITES = true;
 
 // AD5160 wiring: A = signal input, B = ground, W = output.
 constexpr uint8_t DIGIPOT_MUTE_WIPER = 0;

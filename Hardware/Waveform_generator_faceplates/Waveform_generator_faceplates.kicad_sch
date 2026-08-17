@@ -5,6 +5,129 @@
 	(uuid "6a805078-f7bf-4a18-bea3-0e473eb2a882")
 	(paper "A4")
 	(lib_symbols
+		(symbol "Connector:TestPoint"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.762)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "TP"
+				(at 0 6.858 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "TestPoint"
+				(at 0 5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 5.08 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 5.08 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "test point"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "test point tp"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "Pin* Test*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "TestPoint_0_1"
+				(circle
+					(center 0 3.302)
+					(radius 0.762)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "TestPoint_1_1"
+				(pin passive line
+					(at 0 0 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Mechanical:MountingHole_Pad"
 			(pin_numbers
 				(hide yes)
@@ -243,6 +366,121 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:GND1"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "GND1"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND1\" , ground"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "GND1_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND1_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(wire
 		(pts
@@ -296,6 +534,16 @@
 	)
 	(wire
 		(pts
+			(xy 134.62 86.36) (xy 134.62 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "984fd44b-3642-4992-b817-1dfcbabb7646")
+	)
+	(wire
+		(pts
 			(xy 60.96 76.2) (xy 60.96 78.74)
 		)
 		(stroke
@@ -324,83 +572,15 @@
 		)
 		(uuid "b574a998-8eaa-4b84-8db1-734892558556")
 	)
-	(symbol
-		(lib_id "power:GND")
-		(at 88.9 78.74 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "0211f0a4-b392-49fc-9db1-27dac0b59a0e")
-		(property "Reference" "#PWR08"
-			(at 88.9 85.09 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
+	(wire
+		(pts
+			(xy 135.89 86.36) (xy 134.62 86.36)
 		)
-		(property "Value" "GND"
-			(at 88.9 83.82 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
+		(stroke
+			(width 0)
+			(type default)
 		)
-		(property "Footprint" ""
-			(at 88.9 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 88.9 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 88.9 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "d6f2e40c-6e96-45ad-99b3-4c6642f692d8")
-		)
-		(instances
-			(project "Waveform_generator_faceplates"
-				(path "/6a805078-f7bf-4a18-bea3-0e473eb2a882"
-					(reference "#PWR08")
-					(unit 1)
-				)
-			)
-		)
+		(uuid "b9e62e68-3851-469e-8815-912e802d88b0")
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -559,6 +739,84 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND1")
+		(at 88.9 62.23 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2daf9224-e55f-4a95-9203-90b71c72f328")
+		(property "Reference" "#PWR011"
+			(at 88.9 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND1"
+			(at 88.9 67.31 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 88.9 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 88.9 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND1\" , ground"
+			(at 88.9 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "6e957804-14bd-4977-b602-49f8a296fb5f")
+		)
+		(instances
+			(project "Waveform_generator_faceplates"
+				(path "/6a805078-f7bf-4a18-bea3-0e473eb2a882"
+					(reference "#PWR011")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Mechanical:MountingHole_Pad")
 		(at 88.9 73.66 0)
 		(unit 1)
@@ -592,7 +850,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_TopBottom"
+		(property "Footprint" "CUSTOM:M3 hole (3.2mm hole Pad 5mm)"
 			(at 88.9 73.66 0)
 			(hide yes)
 			(show_name no)
@@ -638,84 +896,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 60.96 62.23 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "50a0ddfd-fdad-4d10-aaaa-716699612079")
-		(property "Reference" "#PWR05"
-			(at 60.96 68.58 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 60.96 67.31 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 60.96 62.23 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 60.96 62.23 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 60.96 62.23 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "1c3ca07a-78d4-4703-9906-004b36b25879")
-		)
-		(instances
-			(project "Waveform_generator_faceplates"
-				(path "/6a805078-f7bf-4a18-bea3-0e473eb2a882"
-					(reference "#PWR05")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Mechanical:MountingHole_Pad")
 		(at 60.96 73.66 0)
 		(unit 1)
@@ -749,7 +929,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_TopBottom"
+		(property "Footprint" "CUSTOM:M3 hole (3.2mm hole Pad 5mm)"
 			(at 60.96 73.66 0)
 			(hide yes)
 			(show_name no)
@@ -796,7 +976,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 88.9 62.23 0)
+		(at 134.62 90.17 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -805,9 +985,9 @@
 		(in_pos_files yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "8a839b4d-76bf-4efe-8074-5fa2043f2b48")
-		(property "Reference" "#PWR07"
-			(at 88.9 68.58 0)
+		(uuid "79300468-4152-4074-a0c5-08c240e46895")
+		(property "Reference" "#PWR05"
+			(at 134.62 96.52 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -818,7 +998,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 88.9 67.31 0)
+			(at 134.62 95.25 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -828,7 +1008,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 88.9 62.23 0)
+			(at 134.62 90.17 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -839,7 +1019,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 88.9 62.23 0)
+			(at 134.62 90.17 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -850,7 +1030,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 88.9 62.23 0)
+			(at 134.62 90.17 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -861,12 +1041,168 @@
 			)
 		)
 		(pin "1"
-			(uuid "1deaa57b-3ad2-4f3e-80c5-d7e3c6a9221d")
+			(uuid "b84798f0-f47a-4ee3-aa9e-49c638ba41ce")
 		)
 		(instances
 			(project "Waveform_generator_faceplates"
 				(path "/6a805078-f7bf-4a18-bea3-0e473eb2a882"
-					(reference "#PWR07")
+					(reference "#PWR05")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND1")
+		(at 60.96 62.23 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7bbe1812-ea0f-4abe-b1d8-7cb20da960f7")
+		(property "Reference" "#PWR010"
+			(at 60.96 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND1"
+			(at 60.96 67.31 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 60.96 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 60.96 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND1\" , ground"
+			(at 60.96 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3e921664-2eab-4b69-81fd-3c875cb3d7a3")
+		)
+		(instances
+			(project "Waveform_generator_faceplates"
+				(path "/6a805078-f7bf-4a18-bea3-0e473eb2a882"
+					(reference "#PWR010")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND1")
+		(at 60.96 78.74 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "96f5584d-0387-479c-a6b1-56ae4da837f2")
+		(property "Reference" "#PWR09"
+			(at 60.96 85.09 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND1"
+			(at 60.96 83.82 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 60.96 78.74 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 60.96 78.74 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND1\" , ground"
+			(at 60.96 78.74 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "116fab83-c69b-4460-92be-d9b9d7b8edbe")
+		)
+		(instances
+			(project "Waveform_generator_faceplates"
+				(path "/6a805078-f7bf-4a18-bea3-0e473eb2a882"
+					(reference "#PWR09")
 					(unit 1)
 				)
 			)
@@ -906,7 +1242,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_TopBottom"
+		(property "Footprint" "CUSTOM:M3 hole (3.2mm hole Pad 5mm)"
 			(at 88.9 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -1063,7 +1399,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_TopBottom"
+		(property "Footprint" "CUSTOM:M3 hole (3.2mm hole Pad 5mm)"
 			(at 60.96 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -1142,7 +1478,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_TopBottom"
+		(property "Footprint" "CUSTOM:M3 hole (3.2mm hole Pad 5mm)"
 			(at 88.9 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -1221,7 +1557,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_TopBottom"
+		(property "Footprint" "CUSTOM:M3 hole (3.2mm hole Pad 5mm)"
 			(at 60.96 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -1300,7 +1636,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_TopBottom"
+		(property "Footprint" "CUSTOM:M3 hole (3.2mm hole Pad 5mm)"
 			(at 88.9 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -1457,7 +1793,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_TopBottom"
+		(property "Footprint" "CUSTOM:M3 hole (3.2mm hole Pad 5mm)"
 			(at 60.96 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -1503,8 +1839,8 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 60.96 78.74 0)
+		(lib_id "power:GND1")
+		(at 88.9 78.74 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -1513,9 +1849,9 @@
 		(in_pos_files yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "e9ec032f-4116-4c3f-b228-1ac7d962a7b0")
-		(property "Reference" "#PWR06"
-			(at 60.96 85.09 0)
+		(uuid "eed386ef-b0c7-45ad-9ddb-4fa5a4b11110")
+		(property "Reference" "#PWR012"
+			(at 88.9 85.09 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1525,8 +1861,8 @@
 				)
 			)
 		)
-		(property "Value" "GND"
-			(at 60.96 83.82 0)
+		(property "Value" "GND1"
+			(at 88.9 83.82 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -1536,7 +1872,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 60.96 78.74 0)
+			(at 88.9 78.74 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1547,7 +1883,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 60.96 78.74 0)
+			(at 88.9 78.74 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1557,8 +1893,8 @@
 				)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 60.96 78.74 0)
+		(property "Description" "Power symbol creates a global label with name \"GND1\" , ground"
+			(at 88.9 78.74 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1569,12 +1905,90 @@
 			)
 		)
 		(pin "1"
-			(uuid "40ec0916-fd0b-4a96-9922-e9bc86ab0e00")
+			(uuid "007378ba-feef-4476-8af0-d3de06bea223")
 		)
 		(instances
 			(project "Waveform_generator_faceplates"
 				(path "/6a805078-f7bf-4a18-bea3-0e473eb2a882"
-					(reference "#PWR06")
+					(reference "#PWR012")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 135.89 86.36 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "ef93b6fd-e7d4-41ca-bdee-c8c7e7372004")
+		(property "Reference" "TP1"
+			(at 135.636 84.328 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TP"
+			(at 136.652 88.392 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm"
+			(at 135.89 91.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 135.89 91.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 135.89 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "30e735ba-070e-4284-af29-bc1562b10688")
+		)
+		(instances
+			(project "Waveform_generator_faceplates"
+				(path "/6a805078-f7bf-4a18-bea3-0e473eb2a882"
+					(reference "TP1")
 					(unit 1)
 				)
 			)

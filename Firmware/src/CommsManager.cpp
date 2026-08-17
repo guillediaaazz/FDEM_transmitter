@@ -32,6 +32,7 @@ class ReceiveCallbacks final : public NimBLECharacteristicCallbacks {
 bool CommsManager::begin(CommandHandler handler) {
   commandHandler_ = handler;
   Serial.begin(Config::SERIAL_BAUD);
+  usbTelemetryEnabled_ = Config::USB_TELEMETRY_ENABLED_AT_BOOT;
 
   NimBLEDevice::init(Config::BLE_DEVICE_NAME);
   server_ = NimBLEDevice::createServer();
@@ -64,6 +65,11 @@ void CommsManager::poll() {
 
 void CommsManager::broadcast(const String& message) {
   sendUsb(message);
+  sendBle(message);
+}
+
+void CommsManager::broadcastTelemetry(const String& message) {
+  if (usbTelemetryEnabled_) sendUsb(message);
   sendBle(message);
 }
 

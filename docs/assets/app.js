@@ -265,6 +265,7 @@ async function connectSerial() {
     state.serial.readTask = readSerial(port);
     log('*', 'USB serial connected.');
     sendCommand('STATUS\n');
+    sendCommand('TELEM:1\n');
   } catch (error) {
     await closeSerial();
     setConnected(false);

@@ -24,6 +24,8 @@ void test_parses_standalone_commands() {
   TEST_ASSERT_TRUE(CommandProtocol::parse("AUTOCAL:1 BLT:0", command, error));
   TEST_ASSERT_TRUE(command.autoCalibration);
   TEST_ASSERT_FALSE(command.bluetooth);
+  TEST_ASSERT_TRUE(CommandProtocol::parse("TELEM:1", command, error));
+  TEST_ASSERT_TRUE(command.telemetry);
 }
 
 void test_rejects_duplicate_and_malformed_commands() {

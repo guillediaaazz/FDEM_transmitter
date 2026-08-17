@@ -17,11 +17,13 @@ struct Command {
   bool hasWaveform = false;
   bool hasAutoCalibration = false;
   bool hasBluetooth = false;
+  bool hasTelemetry = false;
   float frequency = 0.0f;
   float amplitude = 0.0f;
   char waveform = 'S';
   bool autoCalibration = false;
   bool bluetooth = false;
+  bool telemetry = false;
 };
 
 inline std::string normalize(const std::string& raw) {
@@ -104,13 +106,16 @@ inline bool parse(const std::string& raw, Command& command, std::string& error) 
     } else if (key == "BLT") {
       if (command.hasBluetooth || !parseSwitch(value, command.bluetooth)) { error = "INVALID_BLT"; return false; }
       command.hasBluetooth = true;
+    } else if (key == "TELEM") {
+      if (command.hasTelemetry || !parseSwitch(value, command.telemetry)) { error = "INVALID_TELEM"; return false; }
+      command.hasTelemetry = true;
     } else {
       error = "UNKNOWN_COMMAND";
       return false;
     }
   }
   if (!command.hasFrequency && !command.hasAmplitude && !command.hasWaveform &&
-      !command.hasAutoCalibration && !command.hasBluetooth) {
+      !command.hasAutoCalibration && !command.hasBluetooth && !command.hasTelemetry) {
     error = "INVALID_SYNTAX";
     return false;
   }

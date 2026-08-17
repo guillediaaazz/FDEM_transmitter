@@ -14,7 +14,10 @@ class CommsManager {
   bool begin(CommandHandler handler);
   void poll();
   void broadcast(const String& message);
+  void broadcastTelemetry(const String& message);
   void setBluetoothEnabled(bool enabled);
+  void setUsbTelemetryEnabled(bool enabled) { usbTelemetryEnabled_ = enabled; }
+  bool usbTelemetryEnabled() const { return usbTelemetryEnabled_; }
   bool bluetoothEnabled() const { return bluetoothEnabled_; }
   bool bluetoothConnected() const { return bluetoothConnected_; }
 
@@ -39,4 +42,5 @@ class CommsManager {
   NimBLEAdvertising* advertising_ = nullptr;
   bool bluetoothEnabled_ = false;
   bool bluetoothConnected_ = false;
+  bool usbTelemetryEnabled_ = false;
 };
