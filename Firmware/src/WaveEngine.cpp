@@ -136,9 +136,7 @@ bool WaveEngine::isOutputActive() const { return requestedAmplitudeVpp_ > 0.0f; 
 
 float WaveEngine::appliedAmplitudeVpp() const {
   const float sourceVpp = Config::DDS_OUTPUT_VPP * Config::PRE_DIGIPOT_BUFFER_GAIN;
-  const float wiperFraction = (attenuator_.wiper() - Config::DIGIPOT_MUTE_WIPER) /
-                               static_cast<float>(Config::DIGIPOT_MAX_SIGNAL_WIPER - Config::DIGIPOT_MUTE_WIPER);
-  return max(0.0f, sourceVpp * wiperFraction * Config::POWER_STAGE_GAIN_V_V);
+  return max(0.0f, sourceVpp * attenuatorFraction() * Config::POWER_STAGE_GAIN_V_V);
 }
 
 void WaveEngine::applyAmplitude() {
@@ -152,11 +150,27 @@ void WaveEngine::applyAmplitude() {
 }
 
 void WaveEngine::applyOffsetDac() {
-  const float prePowerVpp = requestedAmplitudeVpp_ / Config::POWER_STAGE_GAIN_V_V;
-  const float nominalOffsetVolts = prePowerVpp * 0.5f;
+  const float dividerFraction = attenuatorFraction();
+
+  // The subtractor must remove the actual DC level at its signal input, not
+  // merely half of the requested Vpp.  AD9837 VOUT does not begin at 0 V:
+  // its specified low-level offset is amplified by the pre-digipot buffer and
+  // attenuated by the same AD5160 wiper setting as the waveform.  Using the
+  // discrete wiper fraction also keeps the DAC-B value aligned with the Vpp
+  // that is truly applied, rather than the ideal requested Vpp.
+  const float ddsCentreVolts = Config::DDS_OUTPUT_OFFSET + Config::DDS_OUTPUT_VPP * 0.5f;
+  const float nominalOffsetVolts = ddsCentreVolts * Config::PRE_DIGIPOT_BUFFER_GAIN * dividerFraction;
   const int nominalCode = dac_.voltageToCode(nominalOffsetVolts);
   const int outputCode = constrain(nominalCode + correctionCodes_, 0, static_cast<int>(Config::DAC_MAX_CODE));
   dac_.setCode(MCP4822::Channel::B, static_cast<uint16_t>(outputCode));
+}
+
+float WaveEngine::attenuatorFraction() const {
+  const int span = Config::DIGIPOT_MAX_SIGNAL_WIPER - Config::DIGIPOT_MUTE_WIPER;
+  if (span <= 0) return 0.0f;
+  return constrain((static_cast<int>(attenuator_.wiper()) - Config::DIGIPOT_MUTE_WIPER) /
+                       static_cast<float>(span),
+                   0.0f, 1.0f);
 }
 
 void WaveEngine::adjustCorrection(float feedbackVolts, float gain) {

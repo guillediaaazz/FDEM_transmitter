@@ -40,6 +40,7 @@ class WaveEngine {
   void applyOffsetDac();
   void adjustCorrection(float feedbackVolts, float gain);
   int clampCorrection(int value) const;
+  float attenuatorFraction() const;
 
   AD9837 dds_;
   AD5160 attenuator_;

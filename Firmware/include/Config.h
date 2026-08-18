@@ -42,7 +42,8 @@ constexpr bool USB_TELEMETRY_ENABLED_AT_BOOT = false;
 
 // ---- Signal path ----
 constexpr float DDS_REFERENCE_CLOCK_HZ = 16000000.0f;
-constexpr float DDS_OUTPUT_VPP = 0.600f;
+constexpr float DDS_OUTPUT_VPP = 0.610f;
+constexpr float DDS_OUTPUT_OFFSET = 0.037f;  // It does not reach 0 V. It goes from 0.037 V to 0.647 V.
 constexpr float PRE_DIGIPOT_BUFFER_GAIN = 2.0f;
 
 // Measure the closed-loop LM1875 gain and replace this nominal value.
@@ -51,9 +52,12 @@ constexpr float MIN_FREQUENCY_HZ = 1.0f;
 constexpr float MAX_FREQUENCY_HZ = 8000.0f;
 constexpr float MIN_OUTPUT_VPP = 0.0f;
 constexpr float MAX_OUTPUT_VPP = 20.0f;
-// Keep the DAC at midscale while every new FREQ0 word is loaded. This is not
-// required for normal DDS operation, but is useful during board bring-up.
-constexpr bool DDS_RESET_AROUND_FREQUENCY_WRITES = true;
+
+// Keep the DAC at midscale while every new FREQ0 word is loaded.
+// This is not required for normal DDS operation, in fact, it could create
+// some jitter in the analog part every time the frequency is updated, 
+// but it can be useful during board bring-up.
+constexpr bool DDS_RESET_AROUND_FREQUENCY_WRITES = false;
 
 // AD5160 wiring: A = signal input, B = ground, W = output.
 constexpr uint8_t DIGIPOT_MUTE_WIPER = 0;
