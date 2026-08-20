@@ -7696,7 +7696,7 @@
 		(uuid "7886d2c5-efcb-4d7b-acdd-e6ec0271c3b3")
 	)
 	(junction
-		(at 158.75 137.16)
+		(at 162.56 135.89)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8773b6f9-d071-46d8-8d98-57dfe57f114e")
@@ -7708,7 +7708,7 @@
 		(uuid "88227b20-bb8e-47fe-ae20-ded0104452aa")
 	)
 	(junction
-		(at 158.75 149.86)
+		(at 162.56 148.59)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8adcf069-cf7f-4362-862e-5ec003a9558b")
@@ -7726,7 +7726,7 @@
 		(uuid "8bf40edb-203f-4ce9-a5dd-421c615c3702")
 	)
 	(junction
-		(at 158.75 120.65)
+		(at 162.56 119.38)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8e7ea569-59c4-4ae7-8813-ea9324c8ed4f")
@@ -8699,7 +8699,7 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 100.33) (xy 142.24 100.33)
+			(xy 144.78 99.06) (xy 146.05 99.06)
 		)
 		(stroke
 			(width 0)
@@ -8739,7 +8739,7 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 105.41) (xy 142.24 105.41)
+			(xy 144.78 104.14) (xy 146.05 104.14)
 		)
 		(stroke
 			(width 0)
@@ -8929,7 +8929,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 100.33) (xy 133.35 100.33)
+			(xy 134.62 99.06) (xy 137.16 99.06)
 		)
 		(stroke
 			(width 0)
@@ -9039,7 +9039,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 153.67) (xy 158.75 149.86)
+			(xy 162.56 152.4) (xy 162.56 148.59)
 		)
 		(stroke
 			(width 0)
@@ -9249,7 +9249,7 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 137.16) (xy 158.75 137.16)
+			(xy 160.02 135.89) (xy 162.56 135.89)
 		)
 		(stroke
 			(width 0)
@@ -9429,7 +9429,7 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 118.11) (xy 142.24 118.11)
+			(xy 144.78 116.84) (xy 146.05 116.84)
 		)
 		(stroke
 			(width 0)
@@ -9529,7 +9529,7 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 149.86) (xy 158.75 149.86)
+			(xy 160.02 148.59) (xy 162.56 148.59)
 		)
 		(stroke
 			(width 0)
@@ -9659,7 +9659,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 105.41) (xy 133.35 105.41)
+			(xy 134.62 104.14) (xy 137.16 104.14)
 		)
 		(stroke
 			(width 0)
@@ -9859,7 +9859,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 118.11) (xy 133.35 118.11)
+			(xy 134.62 116.84) (xy 137.16 116.84)
 		)
 		(stroke
 			(width 0)
@@ -9869,7 +9869,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 120.65) (xy 158.75 137.16)
+			(xy 162.56 119.38) (xy 162.56 135.89)
 		)
 		(stroke
 			(width 0)
@@ -9979,7 +9979,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 137.16) (xy 133.35 137.16)
+			(xy 134.62 135.89) (xy 137.16 135.89)
 		)
 		(stroke
 			(width 0)
@@ -10489,7 +10489,7 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 149.86) (xy 148.59 149.86)
+			(xy 144.78 148.59) (xy 152.4 148.59)
 		)
 		(stroke
 			(width 0)
@@ -10639,7 +10639,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 149.86) (xy 133.35 149.86)
+			(xy 134.62 148.59) (xy 137.16 148.59)
 		)
 		(stroke
 			(width 0)
@@ -10769,7 +10769,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 102.87) (xy 158.75 102.87)
+			(xy 161.29 101.6) (xy 162.56 101.6)
 		)
 		(stroke
 			(width 0)
@@ -11109,7 +11109,7 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 137.16) (xy 148.59 137.16)
+			(xy 144.78 135.89) (xy 152.4 135.89)
 		)
 		(stroke
 			(width 0)
@@ -11459,7 +11459,7 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 123.19) (xy 142.24 123.19)
+			(xy 144.78 121.92) (xy 146.05 121.92)
 		)
 		(stroke
 			(width 0)
@@ -11569,7 +11569,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 123.19) (xy 133.35 123.19)
+			(xy 134.62 121.92) (xy 137.16 121.92)
 		)
 		(stroke
 			(width 0)
@@ -11629,7 +11629,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 102.87) (xy 158.75 120.65)
+			(xy 162.56 101.6) (xy 162.56 119.38)
 		)
 		(stroke
 			(width 0)
@@ -11689,7 +11689,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 120.65) (xy 158.75 120.65)
+			(xy 161.29 119.38) (xy 162.56 119.38)
 		)
 		(stroke
 			(width 0)
@@ -12079,7 +12079,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 137.16) (xy 158.75 149.86)
+			(xy 162.56 135.89) (xy 162.56 148.59)
 		)
 		(stroke
 			(width 0)
@@ -12108,7 +12108,7 @@
 		(uuid "ff9569ea-2fe8-4a73-8ae0-7db51effe2d0")
 	)
 	(label "LED_OutStatus_2"
-		(at 140.97 149.86 0)
+		(at 144.78 148.59 0)
 		(effects
 			(font
 				(size 0.5 0.5)
@@ -12128,7 +12128,7 @@
 		(uuid "1403323f-8d68-41d5-9526-a04739c68052")
 	)
 	(label "PWM_Bat+_G_2"
-		(at 140.97 100.33 0)
+		(at 144.78 99.06 0)
 		(effects
 			(font
 				(size 0.5 0.5)
@@ -12148,7 +12148,7 @@
 		(uuid "307edfbc-30ed-4d7b-8176-b40856ebc89d")
 	)
 	(label "PWM_Bat-_G_2"
-		(at 140.97 118.11 0)
+		(at 144.78 116.84 0)
 		(effects
 			(font
 				(size 0.5 0.5)
@@ -12168,7 +12168,7 @@
 		(uuid "a330817b-1ec4-4d3b-ac84-602b7b1d1c17")
 	)
 	(label "LED_Bluetooth_2"
-		(at 140.97 137.16 0)
+		(at 144.78 135.89 0)
 		(effects
 			(font
 				(size 0.5 0.5)
@@ -12188,7 +12188,7 @@
 		(uuid "b6f66cb7-07ec-450f-a596-7bdafd56823d")
 	)
 	(label "PWM_Bat+_R_2"
-		(at 140.97 105.41 0)
+		(at 144.78 104.14 0)
 		(effects
 			(font
 				(size 0.5 0.5)
@@ -12198,7 +12198,7 @@
 		(uuid "b70936bd-e254-4f3e-9ecd-edc30e4d8310")
 	)
 	(label "PWM_Bat-_R_2"
-		(at 140.97 123.19 0)
+		(at 144.78 121.92 0)
 		(effects
 			(font
 				(size 0.5 0.5)
@@ -12335,7 +12335,7 @@
 	)
 	(global_label "LED_Bluetooth"
 		(shape input)
-		(at 130.81 137.16 180)
+		(at 134.62 135.89 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -12345,7 +12345,7 @@
 		)
 		(uuid "2d1fd78f-4286-4cb6-b3a7-eb61efcd8c4d")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 114.3389 137.16 0)
+			(at 118.1489 135.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12623,7 +12623,7 @@
 	)
 	(global_label "PWM_Bat+_R"
 		(shape input)
-		(at 130.81 123.19 180)
+		(at 134.62 121.92 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -12633,7 +12633,7 @@
 		)
 		(uuid "82a33e19-670f-40ec-93f1-58fcf129421c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 115.7297 123.19 0)
+			(at 119.5397 121.92 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12647,7 +12647,7 @@
 	)
 	(global_label "PWM_Bat-_R"
 		(shape input)
-		(at 130.81 105.41 180)
+		(at 134.62 104.14 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -12657,7 +12657,7 @@
 		)
 		(uuid "8325eba4-2830-4c9d-9d5e-89f14131929e")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 115.7297 105.41 0)
+			(at 119.5397 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12695,7 +12695,7 @@
 	)
 	(global_label "PWM_Bat-_G"
 		(shape input)
-		(at 130.81 100.33 180)
+		(at 134.62 99.06 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -12705,7 +12705,7 @@
 		)
 		(uuid "85b70463-9d04-4670-a842-34079a43924e")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 115.7297 100.33 0)
+			(at 119.5397 99.06 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12767,7 +12767,7 @@
 	)
 	(global_label "LED_OutStatus"
 		(shape input)
-		(at 130.81 149.86 180)
+		(at 134.62 148.59 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -12777,7 +12777,7 @@
 		)
 		(uuid "902b85ef-8a70-4417-8339-ed3391396405")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 114.2179 149.86 0)
+			(at 118.0279 148.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12911,7 +12911,7 @@
 	)
 	(global_label "PWM_Bat+_G"
 		(shape input)
-		(at 130.81 118.11 180)
+		(at 134.62 116.84 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -12921,7 +12921,7 @@
 		)
 		(uuid "cfe22435-9507-481e-80d3-cb156bc0b12d")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 115.7297 118.11 0)
+			(at 119.5397 116.84 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13103,7 +13103,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 137.16 105.41 90)
+		(at 140.97 104.14 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -13113,7 +13113,7 @@
 		(dnp no)
 		(uuid "00998b3a-8895-4039-8cc0-02bc9687099f")
 		(property "Reference" "R9"
-			(at 134.112 103.378 90)
+			(at 137.922 102.108 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -13123,7 +13123,7 @@
 			)
 		)
 		(property "Value" "220R"
-			(at 139.446 103.378 90)
+			(at 143.256 102.108 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -13133,7 +13133,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
-			(at 137.16 107.188 90)
+			(at 140.97 105.918 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13144,7 +13144,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 137.16 105.41 0)
+			(at 140.97 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13155,7 +13155,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 137.16 105.41 0)
+			(at 140.97 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13166,7 +13166,7 @@
 			)
 		)
 		(property "LCSC" "C17557"
-			(at 137.16 105.41 90)
+			(at 140.97 104.14 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13177,7 +13177,7 @@
 			)
 		)
 		(property "Sim.Device" ""
-			(at 137.16 105.41 90)
+			(at 140.97 104.14 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15899,7 +15899,7 @@
 	)
 	(symbol
 		(lib_id "Device:LED")
-		(at 137.16 149.86 0)
+		(at 140.97 148.59 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -15910,7 +15910,7 @@
 		(dnp no)
 		(uuid "22b5c1cc-a36a-4313-b5af-52774a507775")
 		(property "Reference" "D2"
-			(at 137.16 152.654 0)
+			(at 140.97 151.384 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -15920,7 +15920,7 @@
 			)
 		)
 		(property "Value" "LED_Output"
-			(at 137.16 147.066 0)
+			(at 140.97 145.796 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -15930,7 +15930,7 @@
 			)
 		)
 		(property "Footprint" "LED_THT:LED_D3.0mm_Horizontal_O1.27mm_Z2.0mm"
-			(at 137.16 149.86 0)
+			(at 140.97 148.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15941,7 +15941,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 137.16 149.86 0)
+			(at 140.97 148.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15952,7 +15952,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 137.16 149.86 0)
+			(at 140.97 148.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15963,7 +15963,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 137.16 149.86 0)
+			(at 140.97 148.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15974,7 +15974,7 @@
 			)
 		)
 		(property "Sim.Device" ""
-			(at 137.16 149.86 0)
+			(at 140.97 148.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18930,7 +18930,7 @@
 	)
 	(symbol
 		(lib_id "Device:LED")
-		(at 137.16 137.16 0)
+		(at 140.97 135.89 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -18941,7 +18941,7 @@
 		(dnp no)
 		(uuid "41483d37-22e9-4212-9899-0a148be136e3")
 		(property "Reference" "D1"
-			(at 137.16 139.954 0)
+			(at 140.97 138.684 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -18951,7 +18951,7 @@
 			)
 		)
 		(property "Value" "LED_Bluetooth"
-			(at 137.16 133.858 0)
+			(at 140.97 132.588 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -18961,7 +18961,7 @@
 			)
 		)
 		(property "Footprint" "LED_THT:LED_D3.0mm_Horizontal_O1.27mm_Z2.0mm"
-			(at 137.16 137.16 0)
+			(at 140.97 135.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18972,7 +18972,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 137.16 137.16 0)
+			(at 140.97 135.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18983,7 +18983,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 137.16 137.16 0)
+			(at 140.97 135.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18994,7 +18994,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 137.16 137.16 0)
+			(at 140.97 135.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19005,7 +19005,7 @@
 			)
 		)
 		(property "Sim.Device" ""
-			(at 137.16 137.16 0)
+			(at 140.97 135.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20637,7 +20637,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 137.16 118.11 90)
+		(at 140.97 116.84 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -20647,7 +20647,7 @@
 		(dnp no)
 		(uuid "5dbf2dcd-d469-49b1-a712-e8619a1ab7f8")
 		(property "Reference" "R10"
-			(at 134.112 116.078 90)
+			(at 137.922 114.808 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -20657,7 +20657,7 @@
 			)
 		)
 		(property "Value" "360R"
-			(at 139.446 116.078 90)
+			(at 143.256 114.808 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -20667,7 +20667,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
-			(at 137.16 119.888 90)
+			(at 140.97 118.618 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20678,7 +20678,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 137.16 118.11 0)
+			(at 140.97 116.84 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20689,7 +20689,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 137.16 118.11 0)
+			(at 140.97 116.84 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20700,7 +20700,7 @@
 			)
 		)
 		(property "LCSC" "C25194"
-			(at 137.16 118.11 90)
+			(at 140.97 116.84 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20711,7 +20711,7 @@
 			)
 		)
 		(property "Sim.Device" ""
-			(at 137.16 118.11 90)
+			(at 140.97 116.84 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22883,7 +22883,7 @@
 			)
 		)
 		(property "Value" "AMP_IN"
-			(at 275.844 101.6 0)
+			(at 274.32 101.6 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -25376,7 +25376,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 137.16 100.33 90)
+		(at 140.97 99.06 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -25386,7 +25386,7 @@
 		(dnp no)
 		(uuid "857869ef-2064-4b26-941c-1b51834e8c47")
 		(property "Reference" "R8"
-			(at 134.112 98.298 90)
+			(at 137.922 97.028 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -25396,7 +25396,7 @@
 			)
 		)
 		(property "Value" "360R"
-			(at 139.446 98.298 90)
+			(at 143.256 97.028 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -25406,7 +25406,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
-			(at 137.16 102.108 90)
+			(at 140.97 100.838 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25417,7 +25417,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 137.16 100.33 0)
+			(at 140.97 99.06 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25428,7 +25428,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 137.16 100.33 0)
+			(at 140.97 99.06 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25439,7 +25439,7 @@
 			)
 		)
 		(property "LCSC" "C25194"
-			(at 137.16 100.33 90)
+			(at 140.97 99.06 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25450,7 +25450,7 @@
 			)
 		)
 		(property "Sim.Device" ""
-			(at 137.16 100.33 90)
+			(at 140.97 99.06 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26320,7 +26320,7 @@
 	)
 	(symbol
 		(lib_id "Device:LED_Dual_AKA")
-		(at 149.86 120.65 180)
+		(at 153.67 119.38 180)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -26330,7 +26330,7 @@
 		(dnp no)
 		(uuid "93269b04-acd5-48dd-8e6c-c145838fd97c")
 		(property "Reference" "D4"
-			(at 149.86 112.014 0)
+			(at 153.67 110.744 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -26340,7 +26340,7 @@
 			)
 		)
 		(property "Value" "LED_-12V"
-			(at 149.86 114.554 0)
+			(at 153.67 113.284 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -26350,7 +26350,7 @@
 			)
 		)
 		(property "Footprint" "LED_THT:LED_D3.0mm-3"
-			(at 149.86 120.65 0)
+			(at 153.67 119.38 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26361,7 +26361,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 149.86 120.65 0)
+			(at 153.67 119.38 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26372,7 +26372,7 @@
 			)
 		)
 		(property "Description" "Dual LED, common cathode on pin 2"
-			(at 149.86 120.65 0)
+			(at 153.67 119.38 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26383,7 +26383,7 @@
 			)
 		)
 		(property "Sim.Device" ""
-			(at 149.86 120.65 0)
+			(at 153.67 119.38 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27264,7 +27264,7 @@
 	)
 	(symbol
 		(lib_id "Device:LED_Dual_AKA")
-		(at 149.86 102.87 180)
+		(at 153.67 101.6 180)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -27274,7 +27274,7 @@
 		(dnp no)
 		(uuid "a095b863-af32-4e5a-b11b-b196a138c7d0")
 		(property "Reference" "D3"
-			(at 149.86 94.488 0)
+			(at 153.67 93.218 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -27284,7 +27284,7 @@
 			)
 		)
 		(property "Value" "LED_+12V"
-			(at 149.86 97.028 0)
+			(at 153.67 95.758 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -27294,7 +27294,7 @@
 			)
 		)
 		(property "Footprint" "LED_THT:LED_D3.0mm-3"
-			(at 149.86 102.87 0)
+			(at 153.67 101.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27305,7 +27305,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 149.86 102.87 0)
+			(at 153.67 101.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27316,7 +27316,7 @@
 			)
 		)
 		(property "Description" "Dual LED, common cathode on pin 2"
-			(at 149.86 102.87 0)
+			(at 153.67 101.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27327,7 +27327,7 @@
 			)
 		)
 		(property "Sim.Device" ""
-			(at 149.86 102.87 0)
+			(at 153.67 101.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30394,7 +30394,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 137.16 123.19 90)
+		(at 140.97 121.92 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -30404,7 +30404,7 @@
 		(dnp no)
 		(uuid "c324c715-6781-4250-8cd6-5e6b44e722f2")
 		(property "Reference" "R11"
-			(at 134.112 121.158 90)
+			(at 137.922 119.888 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -30414,7 +30414,7 @@
 			)
 		)
 		(property "Value" "220R"
-			(at 139.446 121.158 90)
+			(at 143.256 119.888 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -30424,7 +30424,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
-			(at 137.16 124.968 90)
+			(at 140.97 123.698 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30435,7 +30435,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 137.16 123.19 0)
+			(at 140.97 121.92 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30446,7 +30446,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 137.16 123.19 0)
+			(at 140.97 121.92 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30457,7 +30457,7 @@
 			)
 		)
 		(property "LCSC" "C17557"
-			(at 137.16 123.19 90)
+			(at 140.97 121.92 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30468,7 +30468,7 @@
 			)
 		)
 		(property "Sim.Device" ""
-			(at 137.16 123.19 90)
+			(at 140.97 121.92 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30908,7 +30908,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 158.75 153.67 0)
+		(at 162.56 152.4 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -30918,7 +30918,7 @@
 		(dnp no)
 		(uuid "c88c0f04-a5af-4e41-92ea-58ff83e83590")
 		(property "Reference" "#PWR092"
-			(at 158.75 160.02 0)
+			(at 162.56 158.75 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30929,7 +30929,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 158.75 157.226 0)
+			(at 162.56 155.956 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -30939,7 +30939,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 158.75 153.67 0)
+			(at 162.56 152.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30950,7 +30950,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 158.75 153.67 0)
+			(at 162.56 152.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30961,7 +30961,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 158.75 153.67 0)
+			(at 162.56 152.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -32385,7 +32385,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 152.4 149.86 90)
+		(at 156.21 148.59 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -32395,7 +32395,7 @@
 		(dnp no)
 		(uuid "de4e58d1-cea7-4bd8-87b7-4ff8581c442d")
 		(property "Reference" "R13"
-			(at 149.352 147.828 90)
+			(at 153.162 146.558 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -32405,7 +32405,7 @@
 			)
 		)
 		(property "Value" "360R"
-			(at 154.686 147.828 90)
+			(at 158.496 146.558 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -32415,7 +32415,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
-			(at 152.4 151.638 90)
+			(at 156.21 150.368 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -32426,7 +32426,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 152.4 149.86 0)
+			(at 156.21 148.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -32437,7 +32437,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 152.4 149.86 0)
+			(at 156.21 148.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -32448,7 +32448,7 @@
 			)
 		)
 		(property "LCSC" "C25194"
-			(at 152.4 149.86 90)
+			(at 156.21 148.59 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -32459,7 +32459,7 @@
 			)
 		)
 		(property "Sim.Device" ""
-			(at 152.4 149.86 90)
+			(at 156.21 148.59 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -32953,7 +32953,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 152.4 137.16 90)
+		(at 156.21 135.89 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -32963,7 +32963,7 @@
 		(dnp no)
 		(uuid "e47de73a-e03e-42a3-810a-5ddd63d54932")
 		(property "Reference" "R12"
-			(at 149.352 135.128 90)
+			(at 153.162 133.858 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -32973,7 +32973,7 @@
 			)
 		)
 		(property "Value" "220R"
-			(at 154.686 135.128 90)
+			(at 158.496 133.858 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -32983,7 +32983,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
-			(at 152.4 138.938 90)
+			(at 156.21 137.668 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -32994,7 +32994,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 152.4 137.16 0)
+			(at 156.21 135.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -33005,7 +33005,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 152.4 137.16 0)
+			(at 156.21 135.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -33016,7 +33016,7 @@
 			)
 		)
 		(property "LCSC" "C17557"
-			(at 152.4 137.16 90)
+			(at 156.21 135.89 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -33027,7 +33027,7 @@
 			)
 		)
 		(property "Sim.Device" ""
-			(at 152.4 137.16 90)
+			(at 156.21 135.89 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

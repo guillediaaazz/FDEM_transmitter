@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fdem-controller-v2';
+const CACHE_NAME = 'fdem-controller-v3';
 const APP_SHELL = [
   './',
   './index.html',

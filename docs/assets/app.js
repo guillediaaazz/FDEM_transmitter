@@ -11,7 +11,7 @@ const elements = {
   connectBleBtn: $('connectBleBtn'), connectUsbBtn: $('connectUsbBtn'), disconnectBtn: $('disconnectBtn'),
   controlFieldset: $('controlFieldset'), frequencyNumber: $('frequencyNumber'), frequencyRange: $('frequencyRange'),
   amplitudeNumber: $('amplitudeNumber'), amplitudeRange: $('amplitudeRange'), autoCalSwitch: $('autoCalSwitch'),
-  bluetoothSwitch: $('bluetoothSwitch'), calibrateBtn: $('calibrateBtn'), statusBtn: $('statusBtn'), helpBtn: $('helpBtn'),
+  bluetoothSwitch: $('bluetoothSwitch'), calibrateBtn: $('calibrateBtn'), clearOffsetBtn: $('clearOffsetBtn'), statusBtn: $('statusBtn'), helpBtn: $('helpBtn'),
   outputIndicator: $('outputIndicator'), positiveRail: $('positiveRail'), negativeRail: $('negativeRail'), batteryPercent: $('batteryPercent'),
   batteryMeter: $('batteryMeter'), telemetryAge: $('telemetryAge'), statusWaveform: $('statusWaveform'),
   statusAutoCal: $('statusAutoCal'), statusCalibration: $('statusCalibration'), statusBluetooth: $('statusBluetooth'),
@@ -345,6 +345,14 @@ function configureControls() {
     sendCommand(`BLT:${elements.bluetoothSwitch.checked ? 1 : 0}\n`);
   });
   elements.calibrateBtn.addEventListener('click', () => sendCommand('CAL\n'));
+  elements.clearOffsetBtn.addEventListener('click', async () => {
+    const confirmed = window.confirm(
+      'Clear the saved output-offset correction? This removes the stored op-amp offset compensation and persists across restart.'
+    );
+    if (!confirmed) return;
+    await sendCommand('OFFSET:CLEAR\n');
+    sendCommand('STATUS\n');
+  });
   elements.statusBtn.addEventListener('click', () => sendCommand('STATUS\n'));
   elements.helpBtn.addEventListener('click', () => sendCommand('HELP\n'));
   elements.clearLogBtn.addEventListener('click', () => { elements.logOutput.textContent = ''; });

@@ -46,6 +46,16 @@ String ddsDiagnosticsMessage() {
          ",FSYNC:" + String(Config::PIN_AD9837_FSYN);
 }
 
+String offsetDiagnosticsMessage() {
+  const WaveEngine::OffsetDiagnostics diagnostics = waveEngine.offsetDiagnostics();
+  return "OFFSET:DIAG:WIPER:" + String(diagnostics.wiper) +
+         ",ATT:" + String(diagnostics.attenuationFraction, 6) +
+         ",NOM:" + String(diagnostics.nominalDacBVolts, 4) +
+         ",CORR:" + String(diagnostics.correctionCodes) +
+         ",DACB_CODE:" + String(diagnostics.dacBCode) +
+         ",DACB:" + String(diagnostics.dacBVolts, 4);
+}
+
 String statusMessage() {
   String message = "STATUS:F:" + String(waveEngine.frequencyHz(), 2) +
                    ",A:" + String(waveEngine.appliedAmplitudeVpp(), 3) +
@@ -54,6 +64,13 @@ String statusMessage() {
                    ",CAL:" + String(waveEngine.calibrationRunning() ? "RUNNING" : "IDLE") +
                    ",BLT:" + String(comms.bluetoothEnabled() ? 1 : 0) +
                    ",TELEM:" + String(comms.usbTelemetryEnabled() ? 1 : 0);
+  if (signalHardwareReady) {
+    const WaveEngine::OffsetDiagnostics diagnostics = waveEngine.offsetDiagnostics();
+    message += ",WIPER:" + String(diagnostics.wiper) +
+               ",DACB_NOM:" + String(diagnostics.nominalDacBVolts, 4) +
+               ",DACB_CORR:" + String(diagnostics.correctionCodes) +
+               ",DACB:" + String(diagnostics.dacBVolts, 4);
+  }
   if (rails.valid) {
     message += ",BATP:" + String(rails.positiveVolts, 2) +
                ",BATN:" + String(rails.negativeVolts, 2) +
@@ -87,13 +104,23 @@ String handleCommand(const String& rawCommand) {
     }
     return "ERR:DDS_DEBUG_COMMAND";
   }
+  if (debugCommand.startsWith("OFFSET:")) {
+    if (!signalHardwareReady) return "ERR:HW_UNCONFIGURED";
+    if (debugCommand == "OFFSET:DIAG") return offsetDiagnosticsMessage();
+    if (debugCommand == "OFFSET:CLEAR") {
+      waveEngine.setStoredCorrection(0);
+      if (preferencesReady) preferences.putInt("offset-corr", 0);
+      return "OK:OFFSET:CLEAR";
+    }
+    return "ERR:OFFSET_DEBUG_COMMAND";
+  }
 
   CommandProtocol::Command command;
   std::string parseError;
   if (!CommandProtocol::parse(rawCommand.c_str(), command, parseError)) return "ERR:" + String(parseError.c_str());
 
   if (command.type == CommandProtocol::Type::Help) {
-    return "HELP:F:<Hz> A:<Vpp> W:<S|T> CAL AUTOCAL:<0|1> BLT:<0|1> TELEM:<0|1> STATUS HELP DDS:DIAG DDS:TEST DDS:TRACE:<0|1> DDS:RESET:<0|1>";
+    return "HELP:F:<Hz> A:<Vpp> W:<S|T> CAL AUTOCAL:<0|1> BLT:<0|1> TELEM:<0|1> STATUS HELP DDS:DIAG DDS:TEST DDS:TRACE:<0|1> DDS:RESET:<0|1> OFFSET:DIAG OFFSET:CLEAR";
   }
   if (command.type == CommandProtocol::Type::Status) return statusMessage();
   if (command.type == CommandProtocol::Type::Calibrate) {

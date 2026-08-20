@@ -52,8 +52,10 @@ bool CommsManager::begin(CommandHandler handler) {
 void CommsManager::poll() {
   while (Serial.available() > 0) {
     const char character = static_cast<char>(Serial.read());
-    if (character == '\r') continue;
-    usbBuffer_ += character;
+    // Terminals differ: Tera Term may send CR, LF, or CRLF for Enter. Treat
+    // either character as a line terminator; an LF after a CR then becomes an
+    // empty line and is harmlessly ignored by processLine().
+    usbBuffer_ += (character == '\r') ? '\n' : character;
     if (usbBuffer_.length() > Config::MAX_COMMAND_LENGTH) {
       sendUsb("ERR:COMMAND_TOO_LONG");
       usbBuffer_ = "";
@@ -126,8 +128,13 @@ void CommsManager::sendResponse(const String& message, bool toBle) {
 }
 
 void CommsManager::sendUsb(const String& message) {
-  Serial.print(message);
-  if (!message.endsWith("\n")) Serial.print('\n');
+  // Use CRLF for conventional terminal rendering. LF-only output makes some
+  // terminals, including common Tera Term configurations, display each new
+  // line one column farther to the right.
+  String line = message;
+  while (line.endsWith("\r") || line.endsWith("\n")) line.remove(line.length() - 1);
+  Serial.print(line);
+  Serial.print("\r\n");
 }
 
 void CommsManager::sendBle(const String& message) {

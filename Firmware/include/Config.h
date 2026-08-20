@@ -11,9 +11,11 @@ constexpr int PIN_UNASSIGNED = -1;
 
 // ---- Pin assignments: fill these before connecting the hardware. ----
 constexpr int PIN_SPI_SCK = 33;
+//constexpr int PIN_SPI_SCK = 27;
 constexpr int PIN_SPI_MOSI = 32;
 constexpr int PIN_SPI_MISO = PIN_UNASSIGNED;  // Not used by these write-only ICs.
 constexpr int PIN_AD9837_FSYN = 27;
+//constexpr int PIN_AD9837_FSYN = 33; // Just for bring-up, SCK and CS were swapped on the board.
 constexpr int PIN_AD5160_CS = 26;
 constexpr int PIN_MCP4822_CS = 25;
 

@@ -10,6 +10,15 @@ class WaveEngine {
  public:
   enum class Waveform : uint8_t { Sine, Triangle };
 
+  struct OffsetDiagnostics {
+    uint8_t wiper;
+    float attenuationFraction;
+    float nominalDacBVolts;
+    int correctionCodes;
+    uint16_t dacBCode;
+    float dacBVolts;
+  };
+
   WaveEngine();
   bool begin();
   bool setFrequency(float frequencyHz);
@@ -23,6 +32,7 @@ class WaveEngine {
   void setDdsTraceEnabled(bool enabled);
   void setDdsReset(bool reset);
   AD9837::Diagnostics ddsDiagnostics() const;
+  OffsetDiagnostics offsetDiagnostics() const;
 
   bool canProduceAmplitude(float requestedVpp) const;
   bool isOutputActive() const;
@@ -41,6 +51,7 @@ class WaveEngine {
   void adjustCorrection(float feedbackVolts, float gain);
   int clampCorrection(int value) const;
   float attenuatorFraction() const;
+  float nominalDacBVolts() const;
 
   AD9837 dds_;
   AD5160 attenuator_;
