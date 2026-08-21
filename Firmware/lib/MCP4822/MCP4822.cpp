@@ -50,9 +50,10 @@ uint16_t MCP4822::code(Channel channel) const {
 uint16_t MCP4822::voltageToCode(float volts) const {
   if (volts <= 0.0f) return 0;
   if (volts >= referenceVolts_) return DAC_CODE_MASK;
-  return static_cast<uint16_t>((volts / referenceVolts_) * DAC_CODE_MASK + 0.5f);
+  // The MCP4822 transfer function is VOUT = code * VREF / 4096 at 1x gain.
+  return min<uint16_t>(static_cast<uint16_t>((volts / referenceVolts_) * 4096.0f + 0.5f), DAC_CODE_MASK);
 }
 
 float MCP4822::codeToVoltage(uint16_t code) const {
-  return (min<uint16_t>(code, DAC_CODE_MASK) * referenceVolts_) / DAC_CODE_MASK;
+  return (min<uint16_t>(code, DAC_CODE_MASK) * referenceVolts_) / 4096.0f;
 }

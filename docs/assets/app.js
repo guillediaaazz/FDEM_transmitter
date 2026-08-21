@@ -3,6 +3,9 @@ const NUS_RX_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'; // Browser -> transm
 const NUS_TX_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'; // Transmitter -> browser
 const BAUD_RATE = 115200;
 const SETTINGS_DEBOUNCE_MS = 180;
+const TRIM_DEBOUNCE_MS = 80;
+const DAC_B_LSB_VOLTS = 2.048 / 4096;
+const POWER_STAGE_GAIN = 16.667;
 
 const $ = (id) => document.getElementById(id);
 const elements = {
@@ -10,8 +13,8 @@ const elements = {
   offlineStatus: $('offlineStatus'), browserStatus: $('browserStatus'), installBtn: $('installBtn'), updateBtn: $('updateBtn'),
   connectBleBtn: $('connectBleBtn'), connectUsbBtn: $('connectUsbBtn'), disconnectBtn: $('disconnectBtn'),
   controlFieldset: $('controlFieldset'), frequencyNumber: $('frequencyNumber'), frequencyRange: $('frequencyRange'),
-  amplitudeNumber: $('amplitudeNumber'), amplitudeRange: $('amplitudeRange'), autoCalSwitch: $('autoCalSwitch'),
-  bluetoothSwitch: $('bluetoothSwitch'), calibrateBtn: $('calibrateBtn'), clearOffsetBtn: $('clearOffsetBtn'), statusBtn: $('statusBtn'), helpBtn: $('helpBtn'),
+  amplitudeNumber: $('amplitudeNumber'), amplitudeRange: $('amplitudeRange'), offsetTrimRange: $('offsetTrimRange'), offsetTrimValue: $('offsetTrimValue'),
+  bluetoothSwitch: $('bluetoothSwitch'), statusBtn: $('statusBtn'), helpBtn: $('helpBtn'),
   outputIndicator: $('outputIndicator'), positiveRail: $('positiveRail'), negativeRail: $('negativeRail'), batteryPercent: $('batteryPercent'),
   batteryMeter: $('batteryMeter'), telemetryAge: $('telemetryAge'), statusWaveform: $('statusWaveform'),
   statusAutoCal: $('statusAutoCal'), statusCalibration: $('statusCalibration'), statusBluetooth: $('statusBluetooth'),
@@ -27,6 +30,7 @@ const state = {
   writeQueue: Promise.resolve(),
   waveform: 'S',
   settingsTimer: null,
+  trimTimer: null,
   deviceStateKnown: false,
   lastTelemetryAt: 0,
   updateRequested: false,
@@ -123,6 +127,23 @@ function syncNumericInput(numberInput, rangeInput) {
   rangeInput.value = String(value);
 }
 
+function renderTrim(codes) {
+  const steps = Number.parseInt(codes, 10);
+  const safeSteps = Number.isFinite(steps) ? steps : 0;
+  const outputEquivalent = safeSteps * DAC_B_LSB_VOLTS * POWER_STAGE_GAIN;
+  elements.offsetTrimRange.value = String(safeSteps);
+  elements.offsetTrimValue.textContent = `${safeSteps} steps · ${outputEquivalent >= 0 ? '+' : ''}${outputEquivalent.toFixed(3)} V`;
+  elements.statusManualTrim.textContent = `${safeSteps >= 0 ? '+' : ''}${safeSteps} steps (${outputEquivalent >= 0 ? '+' : ''}${outputEquivalent.toFixed(3)} V)`;
+}
+
+function scheduleTrim(immediate = false) {
+  if (!state.connected) return;
+  window.clearTimeout(state.trimTimer);
+  const send = () => sendCommand(`TRIM:${elements.offsetTrimRange.value}\n`);
+  if (immediate) send();
+  else state.trimTimer = window.setTimeout(send, TRIM_DEBOUNCE_MS);
+}
+
 async function sendCommand(command) {
   if (!state.connected) {
     log('!', 'No transmitter connection.');
@@ -191,20 +212,16 @@ function parseStatus(payload) {
     elements.amplitudeRange.value = fields.A;
   }
   if (fields.W === 'S' || fields.W === 'T') setWaveform(fields.W);
-  if (fields.AUTOCAL === '0' || fields.AUTOCAL === '1') elements.autoCalSwitch.checked = fields.AUTOCAL === '1';
+  if (fields.TRIM !== undefined) renderTrim(fields.TRIM);
   if (fields.BLT === '0' || fields.BLT === '1') elements.bluetoothSwitch.checked = fields.BLT === '1';
   if (fields.BATP && fields.BATN && fields.BAT) parseBattery(`${fields.BATP},${fields.BATN},${fields.BAT}`);
   elements.statusWaveform.textContent = fields.W === 'T' ? 'Triangle' : fields.W === 'S' ? 'Sine' : '—';
-  elements.statusAutoCal.textContent = fields.AUTOCAL === '1' ? 'Enabled' : fields.AUTOCAL === '0' ? 'Disabled' : '—';
-  elements.statusCalibration.textContent = fields.CAL || '—';
   elements.statusBluetooth.textContent = fields.BLT === '1' ? 'Advertising' : fields.BLT === '0' ? 'Off' : '—';
   state.deviceStateKnown = true;
   renderOutputState();
 }
 
 function parseAcknowledgement(message) {
-  if (message.includes(':CAL:STARTED')) elements.statusCalibration.textContent = 'RUNNING';
-  if (message.includes(':CAL:COMPLETE')) elements.statusCalibration.textContent = 'COMPLETE';
   const amplitude = message.match(/:A:([\d.]+)/);
   if (amplitude) {
     elements.amplitudeNumber.value = amplitude[1];
@@ -335,7 +352,11 @@ function configureControls() {
     setWaveform(button.dataset.waveform);
     scheduleSettings(true);
   }));
-  elements.autoCalSwitch.addEventListener('change', () => sendCommand(`AUTOCAL:${elements.autoCalSwitch.checked ? 1 : 0}\n`));
+  elements.offsetTrimRange.addEventListener('input', () => {
+    renderTrim(elements.offsetTrimRange.value);
+    scheduleTrim();
+  });
+  elements.offsetTrimRange.addEventListener('change', () => scheduleTrim(true));
   elements.bluetoothSwitch.addEventListener('change', () => {
     if (!elements.bluetoothSwitch.checked && state.transport === 'ble' &&
         !window.confirm('Disable Bluetooth advertising? You will need USB serial to enable advertising again after disconnecting.')) {
@@ -343,15 +364,6 @@ function configureControls() {
       return;
     }
     sendCommand(`BLT:${elements.bluetoothSwitch.checked ? 1 : 0}\n`);
-  });
-  elements.calibrateBtn.addEventListener('click', () => sendCommand('CAL\n'));
-  elements.clearOffsetBtn.addEventListener('click', async () => {
-    const confirmed = window.confirm(
-      'Clear the saved output-offset correction? This removes the stored op-amp offset compensation and persists across restart.'
-    );
-    if (!confirmed) return;
-    await sendCommand('OFFSET:CLEAR\n');
-    sendCommand('STATUS\n');
   });
   elements.statusBtn.addEventListener('click', () => sendCommand('STATUS\n'));
   elements.helpBtn.addEventListener('click', () => sendCommand('HELP\n'));
@@ -438,4 +450,5 @@ configureControls();
 configureCapabilities();
 configurePwa();
 setWaveform('S');
+renderTrim(0);
 renderOutputState();

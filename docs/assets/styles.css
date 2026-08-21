@@ -18,7 +18,7 @@
 
 * { box-sizing: border-box; }
 body { min-width: 320px; margin: 0; background: radial-gradient(circle at 20% -20%, #163052 0, transparent 36rem), var(--canvas); color: var(--text); }
-button, input { font: inherit; }
+button, input, output { font: inherit; }
 button { cursor: pointer; }
 button:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 .skip-link { position: fixed; left: 1rem; top: -5rem; z-index: 5; padding: .7rem 1rem; background: var(--focus); color: #111; border-radius: .4rem; font-weight: 700; }
@@ -64,6 +64,7 @@ fieldset { min-inline-size: 0; margin: 1.4rem 0 0; padding: 0; border: 0; }
 .control-block { margin-bottom: 1.35rem; }
 .control-label { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
 .control-label label, .control-title, .switch-row label { font-weight: 750; }
+.control-label output { color: var(--cyan); font-size: .84rem; font-weight: 750; }
 .number-with-unit { display: flex; align-items: center; width: 8.1rem; border: 1px solid var(--line); border-radius: .5rem; background: #081521; overflow: hidden; }
 .number-with-unit input { width: 100%; min-width: 0; padding: .45rem .25rem .45rem .6rem; border: 0; outline: 0; background: transparent; color: var(--text); text-align: right; }
 .number-with-unit span { padding: 0 .55rem 0 .3rem; color: var(--muted); font-size: .8rem; }

@@ -8,7 +8,6 @@ bool PowerMonitor::begin() {
   analogReadResolution(12);
   analogSetPinAttenuation(Config::PIN_ADC_POSITIVE_RAIL, ADC_11db);
   analogSetPinAttenuation(Config::PIN_ADC_NEGATIVE_RAIL, ADC_11db);
-  analogSetPinAttenuation(Config::PIN_ADC_OFFSET_FEEDBACK, ADC_11db);
   ready_ = true;
   return true;
 }
@@ -26,11 +25,6 @@ RailReadings PowerMonitor::readRails() const {
   readings.healthPercent = static_cast<uint8_t>((positivePercent + negativePercent) / 2);
   readings.valid = true;
   return readings;
-}
-
-float PowerMonitor::readOffsetFeedbackVolts() const {
-  if (!ready_) return NAN;
-  return readAdcVolts(Config::PIN_ADC_OFFSET_FEEDBACK);
 }
 
 float PowerMonitor::readAdcVolts(int pin) const {

@@ -13,7 +13,6 @@ class PowerMonitor {
  public:
   bool begin();
   RailReadings readRails() const;
-  float readOffsetFeedbackVolts() const;
 
  private:
   float readAdcVolts(int pin) const;

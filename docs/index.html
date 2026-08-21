@@ -96,12 +96,13 @@
             </div>
           </div>
 
-          <div class="switch-row">
-            <div>
-              <label for="autoCalSwitch">Automatic offset correction</label>
-              <p>Applies slow bounded correction while transmitting.</p>
+          <div class="control-block trim-control">
+            <div class="control-label">
+              <label for="offsetTrimRange">Manual DAC-B offset trim</label>
+              <output id="offsetTrimValue" for="offsetTrimRange">0 steps · +0.000 V</output>
             </div>
-            <label class="switch"><input id="autoCalSwitch" type="checkbox"><span aria-hidden="true"></span></label>
+            <input id="offsetTrimRange" type="range" min="-255" max="255" step="1" value="0">
+            <p class="field-note">Positive steps increase DAC-B subtraction. The voltage is the power-stage output-equivalent correction.</p>
           </div>
 
           <div class="switch-row">
@@ -113,8 +114,6 @@
           </div>
 
           <div class="control-actions">
-            <button id="calibrateBtn" type="button" class="button button-warning">Run calibration</button>
-            <button id="clearOffsetBtn" type="button" class="button button-danger">Clear saved offset</button>
             <button id="statusBtn" type="button" class="button button-quiet">Refresh status</button>
             <button id="helpBtn" type="button" class="button button-quiet">Protocol help</button>
           </div>
@@ -139,8 +138,7 @@
         </div>
         <dl class="device-status">
           <div><dt>Waveform</dt><dd id="statusWaveform">—</dd></div>
-          <div><dt>Offset mode</dt><dd id="statusAutoCal">—</dd></div>
-          <div><dt>Calibration</dt><dd id="statusCalibration">—</dd></div>
+          <div><dt>DAC-B trim</dt><dd id="statusManualTrim">—</dd></div>
           <div><dt>Bluetooth</dt><dd id="statusBluetooth">—</dd></div>
         </dl>
       </section>

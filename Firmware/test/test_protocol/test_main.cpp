@@ -19,10 +19,9 @@ void test_parses_ui_settings_line() {
 void test_parses_standalone_commands() {
   CommandProtocol::Command command;
   std::string error;
-  TEST_ASSERT_TRUE(CommandProtocol::parse("CAL", command, error));
-  TEST_ASSERT_EQUAL_INT(static_cast<int>(CommandProtocol::Type::Calibrate), static_cast<int>(command.type));
-  TEST_ASSERT_TRUE(CommandProtocol::parse("AUTOCAL:1 BLT:0", command, error));
-  TEST_ASSERT_TRUE(command.autoCalibration);
+  TEST_ASSERT_TRUE(CommandProtocol::parse("TRIM:-12 BLT:0", command, error));
+  TEST_ASSERT_TRUE(command.hasManualOffsetTrim);
+  TEST_ASSERT_EQUAL_INT(-12, command.manualOffsetTrimCodes);
   TEST_ASSERT_FALSE(command.bluetooth);
   TEST_ASSERT_TRUE(CommandProtocol::parse("TELEM:1", command, error));
   TEST_ASSERT_TRUE(command.telemetry);

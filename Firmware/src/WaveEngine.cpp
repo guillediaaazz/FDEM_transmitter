@@ -1,7 +1,5 @@
 #include "WaveEngine.h"
 
-#include <math.h>
-
 #include <SPI.h>
 
 #include "Config.h"
@@ -49,35 +47,23 @@ bool WaveEngine::setAmplitude(float requestedVpp) {
   return true;
 }
 
+bool WaveEngine::canSetManualOffsetTrimCodes(int codes) const {
+  return codes >= -Config::MANUAL_DAC_B_TRIM_LIMIT_CODES &&
+         codes <= Config::MANUAL_DAC_B_TRIM_LIMIT_CODES;
+}
+
+bool WaveEngine::setManualOffsetTrimCodes(int codes) {
+  if (!canSetManualOffsetTrimCodes(codes)) return false;
+  manualOffsetTrimCodes_ = codes;
+  if (ready_) applyOffsetDac();
+  return true;
+}
+
 void WaveEngine::setWaveform(Waveform waveform) {
   waveform_ = waveform;
   if (ready_) {
     dds_.setWaveform(waveform_ == Waveform::Sine ? AD9837::Waveform::Sine : AD9837::Waveform::Triangle);
   }
-}
-
-void WaveEngine::setAutoCalibration(bool enabled) {
-  if (calibrationRunning_) {
-    restoreAutoAfterCalibration_ = enabled;
-    return;
-  }
-  autoCalibrationEnabled_ = enabled;
-}
-
-void WaveEngine::setStoredCorrection(int correctionCodes) {
-  correctionCodes_ = clampCorrection(correctionCodes);
-  if (ready_) applyOffsetDac();
-}
-
-void WaveEngine::startCalibration() {
-  if (!ready_ || calibrationRunning_) return;
-  restoreAutoAfterCalibration_ = autoCalibrationEnabled_;
-  autoCalibrationEnabled_ = false;
-  calibrationRunning_ = true;
-  calibrationFinished_ = false;
-  calibrationSteps_ = 0;
-  settledSteps_ = 0;
-  lastOffsetUpdateMs_ = 0;
 }
 
 void WaveEngine::runDdsKnownGoodTest() {
@@ -105,43 +91,12 @@ WaveEngine::OffsetDiagnostics WaveEngine::offsetDiagnostics() const {
       attenuator_.wiper(),
       attenuatorFraction(),
       nominalDacBVolts(),
-      correctionCodes_,
+      manualOffsetTrimCodes_,
+      dac_.code(MCP4822::Channel::A),
+      dac_.codeToVoltage(dac_.code(MCP4822::Channel::A)),
       dacBCode,
       dac_.codeToVoltage(dacBCode),
   };
-}
-
-void WaveEngine::updateOffset(float feedbackVolts, uint32_t now) {
-  if (!ready_ || isnan(feedbackVolts)) return;
-
-  if (calibrationRunning_) {
-    if (now - lastOffsetUpdateMs_ < Config::OFFSET_CALIBRATION_INTERVAL_MS) return;
-    lastOffsetUpdateMs_ = now;
-    adjustCorrection(feedbackVolts, Config::OFFSET_CALIBRATION_GAIN);
-    ++calibrationSteps_;
-    if (fabsf(Config::OFFSET_FEEDBACK_TARGET_VOLTS - feedbackVolts) <= Config::OFFSET_SETTLED_ERROR_VOLTS) {
-      ++settledSteps_;
-    } else {
-      settledSteps_ = 0;
-    }
-    if (settledSteps_ >= Config::OFFSET_CALIBRATION_SETTLED_STEPS ||
-        calibrationSteps_ >= Config::OFFSET_CALIBRATION_MAX_STEPS) {
-      calibrationRunning_ = false;
-      autoCalibrationEnabled_ = restoreAutoAfterCalibration_;
-      calibrationFinished_ = true;
-    }
-    return;
-  }
-
-  if (!autoCalibrationEnabled_ || now - lastOffsetUpdateMs_ < Config::OFFSET_AUTO_INTERVAL_MS) return;
-  lastOffsetUpdateMs_ = now;
-  adjustCorrection(feedbackVolts, Config::OFFSET_AUTO_GAIN);
-}
-
-bool WaveEngine::takeCalibrationFinished() {
-  const bool finished = calibrationFinished_;
-  calibrationFinished_ = false;
-  return finished;
 }
 
 bool WaveEngine::isOutputActive() const { return requestedAmplitudeVpp_ > 0.0f; }
@@ -149,6 +104,10 @@ bool WaveEngine::isOutputActive() const { return requestedAmplitudeVpp_ > 0.0f; 
 float WaveEngine::appliedAmplitudeVpp() const {
   const float sourceVpp = Config::DDS_OUTPUT_VPP * Config::PRE_DIGIPOT_BUFFER_GAIN;
   return max(0.0f, sourceVpp * attenuatorFraction() * Config::POWER_STAGE_GAIN_V_V);
+}
+
+float WaveEngine::manualOffsetTrimOutputVolts() const {
+  return manualOffsetTrimCodes_ * dac_.codeToVoltage(1) * Config::POWER_STAGE_GAIN_V_V;
 }
 
 void WaveEngine::applyAmplitude() {
@@ -163,7 +122,7 @@ void WaveEngine::applyAmplitude() {
 
 void WaveEngine::applyOffsetDac() {
   const int nominalCode = dac_.voltageToCode(nominalDacBVolts());
-  const int outputCode = constrain(nominalCode + correctionCodes_, 0, static_cast<int>(Config::DAC_MAX_CODE));
+  const int outputCode = constrain(nominalCode + manualOffsetTrimCodes_, 0, static_cast<int>(Config::DAC_MAX_CODE));
   dac_.setCode(MCP4822::Channel::B, static_cast<uint16_t>(outputCode));
 }
 
@@ -182,20 +141,9 @@ float WaveEngine::nominalDacBVolts() const {
   // attenuated by the same AD5160 wiper setting as the waveform. Using the
   // discrete wiper fraction keeps DAC-B aligned with the Vpp truly applied.
   const float ddsCentreVolts = Config::DDS_OUTPUT_OFFSET + Config::DDS_OUTPUT_VPP * 0.5f;
-  return ddsCentreVolts * Config::PRE_DIGIPOT_BUFFER_GAIN * attenuatorFraction();
-}
-
-void WaveEngine::adjustCorrection(float feedbackVolts, float gain) {
-  const float errorVolts = Config::OFFSET_FEEDBACK_TARGET_VOLTS - feedbackVolts;
-  const float dacCodesPerVolt = Config::DAC_MAX_CODE / Config::DAC_REFERENCE_VOLTS;
-  int deltaCodes = static_cast<int>(errorVolts * dacCodesPerVolt * gain * Config::OFFSET_CORRECTION_POLARITY);
-  if (deltaCodes == 0 && fabsf(errorVolts) > Config::OFFSET_SETTLED_ERROR_VOLTS) {
-    deltaCodes = errorVolts > 0.0f ? Config::OFFSET_CORRECTION_POLARITY : -Config::OFFSET_CORRECTION_POLARITY;
+  float offsetVolts = ddsCentreVolts * Config::PRE_DIGIPOT_BUFFER_GAIN * attenuatorFraction();
+  if (requestedAmplitudeVpp_ <= 0.0f) {
+    offsetVolts += Config::DIGIPOT_MUTE_RESIDUAL_DAC_B_VOLTS;
   }
-  correctionCodes_ = clampCorrection(correctionCodes_ + deltaCodes);
-  applyOffsetDac();
-}
-
-int WaveEngine::clampCorrection(int value) const {
-  return constrain(value, -Config::OFFSET_CORRECTION_LIMIT_CODES, Config::OFFSET_CORRECTION_LIMIT_CODES);
+  return offsetVolts;
 }

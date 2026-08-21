@@ -21,6 +21,8 @@ constexpr int PIN_MCP4822_CS = 25;
 
 constexpr int PIN_ADC_POSITIVE_RAIL = 36;
 constexpr int PIN_ADC_NEGATIVE_RAIL = 39;
+// Reserved for a future offset-feedback experiment. It is not read by the
+// current firmware, which uses only the manual DAC-B trim below.
 constexpr int PIN_ADC_OFFSET_FEEDBACK = 34;
 
 constexpr int PIN_LED_POSITIVE_GREEN = 18;
@@ -44,8 +46,8 @@ constexpr bool USB_TELEMETRY_ENABLED_AT_BOOT = false;
 
 // ---- Signal path ----
 constexpr float DDS_REFERENCE_CLOCK_HZ = 16000000.0f;
-constexpr float DDS_OUTPUT_VPP = 0.610f;
-constexpr float DDS_OUTPUT_OFFSET = 0.037f;  // It does not reach 0 V. It goes from 0.037 V to 0.647 V.
+constexpr float DDS_OUTPUT_VPP = 0.606f;
+constexpr float DDS_OUTPUT_OFFSET = 0.046f;  // It does not reach 0 V. It goes from 0.037 V to 0.647 V.
 constexpr float PRE_DIGIPOT_BUFFER_GAIN = 2.0f;
 
 // Measure the closed-loop LM1875 gain and replace this nominal value.
@@ -66,24 +68,19 @@ constexpr uint8_t DIGIPOT_MUTE_WIPER = 0;
 constexpr uint8_t DIGIPOT_MAX_SIGNAL_WIPER = 255;
 
 // ---- MCP4822 ----
+// Effective MCP4822 reference at the DAC output. Keep 2.048 V initially;
+// replace it only after measuring the actual full-scale/reference behavior.
 constexpr float DAC_REFERENCE_VOLTS = 2.048f;
 constexpr uint16_t DAC_MAX_CODE = 4095;
-constexpr float FEEDBACK_BIAS_DAC_VOLTS = 0.2895f;  // MCP4822 channel A
+constexpr float FEEDBACK_BIAS_DAC_VOLTS = 0.2895f;  // MCP4822 channel A, nominal hardware bias.
 
-// ---- Output offset feedback loop ----
-constexpr float OFFSET_FEEDBACK_GAIN = 4.7f;
-constexpr float OFFSET_FEEDBACK_TARGET_VOLTS = 1.650f;
-
-// +1 means increasing DAC-B code raises the measured ADC voltage; -1 means it lowers it.
-constexpr int OFFSET_CORRECTION_POLARITY = -1;
-constexpr int OFFSET_CORRECTION_LIMIT_CODES = 600;
-constexpr float OFFSET_CALIBRATION_GAIN = 0.70f;
-constexpr float OFFSET_AUTO_GAIN = 0.12f;
-constexpr float OFFSET_SETTLED_ERROR_VOLTS = 0.010f;
-constexpr uint8_t OFFSET_CALIBRATION_MAX_STEPS = 24;
-constexpr uint8_t OFFSET_CALIBRATION_SETTLED_STEPS = 3;
-constexpr uint32_t OFFSET_CALIBRATION_INTERVAL_MS = 250;
-constexpr uint32_t OFFSET_AUTO_INTERVAL_MS = 500;
+// ---- Manual output-offset trim ----
+// The AD5160 W-to-B wiper resistance leaves a small signal at code 0. Add
+// this DAC-B voltage only while A:0 is selected to subtract that residual.
+constexpr float DIGIPOT_MUTE_RESIDUAL_DAC_B_VOLTS = 0.006f;
+// User-controlled signed adjustment added directly to the DAC-B code. It is
+// deliberately volatile and always starts at zero after boot.
+constexpr int MANUAL_DAC_B_TRIM_LIMIT_CODES = 255;
 
 // ---- ESP32 ADC and battery monitoring ----
 constexpr float ADC_VOLTAGE_SCALE = 1.0f;
@@ -109,8 +106,7 @@ inline bool signalPinsConfigured() {
 }
 
 inline bool powerMonitorPinsConfigured() {
-  return pinAssigned(PIN_ADC_POSITIVE_RAIL) && pinAssigned(PIN_ADC_NEGATIVE_RAIL) &&
-         pinAssigned(PIN_ADC_OFFSET_FEEDBACK);
+  return pinAssigned(PIN_ADC_POSITIVE_RAIL) && pinAssigned(PIN_ADC_NEGATIVE_RAIL);
 }
 
 inline bool ledPinsConfigured() {

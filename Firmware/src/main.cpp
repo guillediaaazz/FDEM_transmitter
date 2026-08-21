@@ -1,6 +1,4 @@
 #include <Arduino.h>
-#include <Preferences.h>
-
 #include "CommandProtocol.h"
 #include "CommsManager.h"
 #include "Config.h"
@@ -13,10 +11,8 @@ CommsManager comms;
 PowerMonitor powerMonitor;
 StatusLeds statusLeds;
 WaveEngine waveEngine;
-Preferences preferences;
 RailReadings rails;
 bool signalHardwareReady = false;
-bool preferencesReady = false;
 uint32_t lastTelemetryMs = 0;
 
 String waveformName(WaveEngine::Waveform waveform) {
@@ -51,7 +47,9 @@ String offsetDiagnosticsMessage() {
   return "OFFSET:DIAG:WIPER:" + String(diagnostics.wiper) +
          ",ATT:" + String(diagnostics.attenuationFraction, 6) +
          ",NOM:" + String(diagnostics.nominalDacBVolts, 4) +
-         ",CORR:" + String(diagnostics.correctionCodes) +
+         ",TRIM:" + String(diagnostics.manualTrimCodes) +
+         ",DACA_CODE:" + String(diagnostics.dacACode) +
+         ",DACA:" + String(diagnostics.dacAVolts, 4) +
          ",DACB_CODE:" + String(diagnostics.dacBCode) +
          ",DACB:" + String(diagnostics.dacBVolts, 4);
 }
@@ -60,15 +58,15 @@ String statusMessage() {
   String message = "STATUS:F:" + String(waveEngine.frequencyHz(), 2) +
                    ",A:" + String(waveEngine.appliedAmplitudeVpp(), 3) +
                    ",W:" + waveformName(waveEngine.waveform()) +
-                   ",AUTOCAL:" + String(waveEngine.autoCalibrationEnabled() ? 1 : 0) +
-                   ",CAL:" + String(waveEngine.calibrationRunning() ? "RUNNING" : "IDLE") +
+                   ",TRIM:" + String(waveEngine.manualOffsetTrimCodes()) +
+                   ",TRIM_OUT:" + String(waveEngine.manualOffsetTrimOutputVolts(), 3) +
                    ",BLT:" + String(comms.bluetoothEnabled() ? 1 : 0) +
                    ",TELEM:" + String(comms.usbTelemetryEnabled() ? 1 : 0);
   if (signalHardwareReady) {
     const WaveEngine::OffsetDiagnostics diagnostics = waveEngine.offsetDiagnostics();
     message += ",WIPER:" + String(diagnostics.wiper) +
                ",DACB_NOM:" + String(diagnostics.nominalDacBVolts, 4) +
-               ",DACB_CORR:" + String(diagnostics.correctionCodes) +
+               ",DACA:" + String(diagnostics.dacAVolts, 4) +
                ",DACB:" + String(diagnostics.dacBVolts, 4);
   }
   if (rails.valid) {
@@ -107,11 +105,6 @@ String handleCommand(const String& rawCommand) {
   if (debugCommand.startsWith("OFFSET:")) {
     if (!signalHardwareReady) return "ERR:HW_UNCONFIGURED";
     if (debugCommand == "OFFSET:DIAG") return offsetDiagnosticsMessage();
-    if (debugCommand == "OFFSET:CLEAR") {
-      waveEngine.setStoredCorrection(0);
-      if (preferencesReady) preferences.putInt("offset-corr", 0);
-      return "OK:OFFSET:CLEAR";
-    }
     return "ERR:OFFSET_DEBUG_COMMAND";
   }
 
@@ -120,25 +113,20 @@ String handleCommand(const String& rawCommand) {
   if (!CommandProtocol::parse(rawCommand.c_str(), command, parseError)) return "ERR:" + String(parseError.c_str());
 
   if (command.type == CommandProtocol::Type::Help) {
-    return "HELP:F:<Hz> A:<Vpp> W:<S|T> CAL AUTOCAL:<0|1> BLT:<0|1> TELEM:<0|1> STATUS HELP DDS:DIAG DDS:TEST DDS:TRACE:<0|1> DDS:RESET:<0|1> OFFSET:DIAG OFFSET:CLEAR";
+    return "HELP:F:<Hz> A:<Vpp> W:<S|T> TRIM:<signed DAC steps> BLT:<0|1> TELEM:<0|1> STATUS HELP DDS:DIAG DDS:TEST DDS:TRACE:<0|1> DDS:RESET:<0|1> OFFSET:DIAG";
   }
   if (command.type == CommandProtocol::Type::Status) return statusMessage();
-  if (command.type == CommandProtocol::Type::Calibrate) {
-    if (!signalHardwareReady) return "ERR:HW_UNCONFIGURED";
-    if (waveEngine.calibrationRunning()) return "ERR:CAL_ALREADY_RUNNING";
-    waveEngine.startCalibration();
-    return "OK:CAL:STARTED";
-  }
 
   if ((command.hasFrequency && (command.frequency < Config::MIN_FREQUENCY_HZ || command.frequency > Config::MAX_FREQUENCY_HZ)) ||
-      (command.hasAmplitude && !waveEngine.canProduceAmplitude(command.amplitude))) return "ERR:OUT_OF_RANGE";
-  if ((command.hasFrequency || command.hasAmplitude || command.hasWaveform || command.hasAutoCalibration) && !signalHardwareReady) return "ERR:HW_UNCONFIGURED";
+      (command.hasAmplitude && !waveEngine.canProduceAmplitude(command.amplitude)) ||
+      (command.hasManualOffsetTrim && !waveEngine.canSetManualOffsetTrimCodes(command.manualOffsetTrimCodes))) return "ERR:OUT_OF_RANGE";
+  if ((command.hasFrequency || command.hasAmplitude || command.hasWaveform || command.hasManualOffsetTrim) && !signalHardwareReady) return "ERR:HW_UNCONFIGURED";
 
   const WaveEngine::Waveform waveform = command.waveform == 'S' ? WaveEngine::Waveform::Sine : WaveEngine::Waveform::Triangle;
   if (command.hasFrequency) waveEngine.setFrequency(command.frequency);
   if (command.hasAmplitude) waveEngine.setAmplitude(command.amplitude);
   if (command.hasWaveform) waveEngine.setWaveform(waveform);
-  if (command.hasAutoCalibration) waveEngine.setAutoCalibration(command.autoCalibration);
+  if (command.hasManualOffsetTrim) waveEngine.setManualOffsetTrimCodes(command.manualOffsetTrimCodes);
   if (command.hasBluetooth) comms.setBluetoothEnabled(command.bluetooth);
   if (command.hasTelemetry) comms.setUsbTelemetryEnabled(command.telemetry);
 
@@ -146,7 +134,7 @@ String handleCommand(const String& rawCommand) {
   if (command.hasFrequency) response += ":F:" + String(command.frequency, 2);
   if (command.hasAmplitude) response += ":A:" + String(waveEngine.appliedAmplitudeVpp(), 3);
   if (command.hasWaveform) response += ":W:" + waveformName(waveform);
-  if (command.hasAutoCalibration) response += ":AUTOCAL:" + String(command.autoCalibration ? 1 : 0);
+  if (command.hasManualOffsetTrim) response += ":TRIM:" + String(command.manualOffsetTrimCodes);
   if (command.hasBluetooth) response += ":BLT:" + String(command.bluetooth ? 1 : 0);
   if (command.hasTelemetry) response += ":TELEM:" + String(command.telemetry ? 1 : 0);
   return response;
@@ -167,8 +155,6 @@ void setup() {
   signalHardwareReady = waveEngine.begin();
   powerMonitor.begin();
   statusLeds.begin();
-  preferencesReady = preferences.begin("fdem-tx", false);
-  if (preferencesReady) waveEngine.setStoredCorrection(preferences.getInt("offset-corr", 0));
   comms.begin(handleCommand);
   Serial.println(signalHardwareReady ? "FDEM-TX READY" : "FDEM-TX READY: CONFIGURE PINS");
 }
@@ -179,11 +165,6 @@ void loop() {
   updateTelemetry(now);
 
   if (signalHardwareReady) {
-    waveEngine.updateOffset(powerMonitor.readOffsetFeedbackVolts(), now);
-    if (waveEngine.takeCalibrationFinished()) {
-      if (preferencesReady) preferences.putInt("offset-corr", waveEngine.correctionCodes());
-      comms.broadcast("OK:CAL:COMPLETE");
-    }
     statusLeds.setOutputActive(waveEngine.isOutputActive());
   }
   statusLeds.setBluetoothState(comms.bluetoothEnabled(), comms.bluetoothConnected());
