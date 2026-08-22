@@ -8,7 +8,7 @@
   <title>FDEM TX Controller</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./assets/icons/fdem-192.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="stylesheet" href="./assets/styles.css?v=6">
 </head>
 <body>
   <a class="skip-link" href="#controls">Skip to signal controls</a>
@@ -98,11 +98,15 @@
 
           <div class="control-block trim-control">
             <div class="control-label">
-              <label for="offsetTrimRange">Manual DAC-B offset trim</label>
+              <label for="offsetTrimRange">Manual output-offset trim</label>
               <output id="offsetTrimValue" for="offsetTrimRange">0 steps · +0.000 V</output>
             </div>
-            <input id="offsetTrimRange" type="range" min="-255" max="255" step="1" value="0">
-            <p class="field-note">Positive steps increase DAC-B subtraction. The voltage is the power-stage output-equivalent correction.</p>
+            <div class="trim-slider-row">
+              <button id="trimDecreaseBtn" type="button" class="trim-step-button" aria-label="Decrease output-offset trim by one step">−</button>
+              <input id="offsetTrimRange" type="range" min="-255" max="255" step="1" value="0">
+              <button id="trimIncreaseBtn" type="button" class="trim-step-button" aria-label="Increase output-offset trim by one step">+</button>
+            </div>
+            <p class="field-note">Positive values add output offset; the controller applies the equal inverse DAC-B adjustment. The voltage is referred to the power-stage output.</p>
           </div>
 
           <div class="switch-row">
@@ -138,7 +142,7 @@
         </div>
         <dl class="device-status">
           <div><dt>Waveform</dt><dd id="statusWaveform">—</dd></div>
-          <div><dt>DAC-B trim</dt><dd id="statusManualTrim">—</dd></div>
+          <div><dt>Output trim</dt><dd id="statusManualTrim">—</dd></div>
           <div><dt>Bluetooth</dt><dd id="statusBluetooth">—</dd></div>
         </dl>
       </section>
@@ -151,6 +155,6 @@
     </details>
   </main>
   <noscript><p class="noscript">This controller requires JavaScript to communicate with the transmitter.</p></noscript>
-  <script type="module" src="./assets/app.js"></script>
+  <script type="module" src="./assets/app.js?v=6"></script>
 </body>
 </html>

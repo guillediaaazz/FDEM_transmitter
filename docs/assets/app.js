@@ -14,6 +14,7 @@ const elements = {
   connectBleBtn: $('connectBleBtn'), connectUsbBtn: $('connectUsbBtn'), disconnectBtn: $('disconnectBtn'),
   controlFieldset: $('controlFieldset'), frequencyNumber: $('frequencyNumber'), frequencyRange: $('frequencyRange'),
   amplitudeNumber: $('amplitudeNumber'), amplitudeRange: $('amplitudeRange'), offsetTrimRange: $('offsetTrimRange'), offsetTrimValue: $('offsetTrimValue'),
+  trimDecreaseBtn: $('trimDecreaseBtn'), trimIncreaseBtn: $('trimIncreaseBtn'),
   bluetoothSwitch: $('bluetoothSwitch'), statusBtn: $('statusBtn'), helpBtn: $('helpBtn'),
   outputIndicator: $('outputIndicator'), positiveRail: $('positiveRail'), negativeRail: $('negativeRail'), batteryPercent: $('batteryPercent'),
   batteryMeter: $('batteryMeter'), telemetryAge: $('telemetryAge'), statusWaveform: $('statusWaveform'),
@@ -127,9 +128,11 @@ function syncNumericInput(numberInput, rangeInput) {
   rangeInput.value = String(value);
 }
 
-function renderTrim(codes) {
-  const steps = Number.parseInt(codes, 10);
-  const safeSteps = Number.isFinite(steps) ? steps : 0;
+function renderTrim(userSteps) {
+  const parsedSteps = Number.parseInt(userSteps, 10);
+  const minimum = Number.parseInt(elements.offsetTrimRange.min, 10);
+  const maximum = Number.parseInt(elements.offsetTrimRange.max, 10);
+  const safeSteps = Math.max(minimum, Math.min(maximum, Number.isFinite(parsedSteps) ? parsedSteps : 0));
   const outputEquivalent = safeSteps * DAC_B_LSB_VOLTS * POWER_STAGE_GAIN;
   elements.offsetTrimRange.value = String(safeSteps);
   elements.offsetTrimValue.textContent = `${safeSteps} steps · ${outputEquivalent >= 0 ? '+' : ''}${outputEquivalent.toFixed(3)} V`;
@@ -139,9 +142,17 @@ function renderTrim(codes) {
 function scheduleTrim(immediate = false) {
   if (!state.connected) return;
   window.clearTimeout(state.trimTimer);
-  const send = () => sendCommand(`TRIM:${elements.offsetTrimRange.value}\n`);
+  // TRIM is a DAC-B code. The analog subtractor reverses its effect at the
+  // output, so invert the user-facing output-offset correction here.
+  const send = () => sendCommand(`TRIM:${-Number.parseInt(elements.offsetTrimRange.value, 10)}\n`);
   if (immediate) send();
   else state.trimTimer = window.setTimeout(send, TRIM_DEBOUNCE_MS);
+}
+
+function nudgeTrim(delta) {
+  const current = Number.parseInt(elements.offsetTrimRange.value, 10);
+  renderTrim(current + delta);
+  scheduleTrim(true);
 }
 
 async function sendCommand(command) {
@@ -212,7 +223,8 @@ function parseStatus(payload) {
     elements.amplitudeRange.value = fields.A;
   }
   if (fields.W === 'S' || fields.W === 'T') setWaveform(fields.W);
-  if (fields.TRIM !== undefined) renderTrim(fields.TRIM);
+  // The device reports DAC-B codes; display their inverse output effect.
+  if (fields.TRIM !== undefined) renderTrim(-Number.parseInt(fields.TRIM, 10));
   if (fields.BLT === '0' || fields.BLT === '1') elements.bluetoothSwitch.checked = fields.BLT === '1';
   if (fields.BATP && fields.BATN && fields.BAT) parseBattery(`${fields.BATP},${fields.BATN},${fields.BAT}`);
   elements.statusWaveform.textContent = fields.W === 'T' ? 'Triangle' : fields.W === 'S' ? 'Sine' : '—';
@@ -357,6 +369,8 @@ function configureControls() {
     scheduleTrim();
   });
   elements.offsetTrimRange.addEventListener('change', () => scheduleTrim(true));
+  elements.trimDecreaseBtn.addEventListener('click', () => nudgeTrim(-1));
+  elements.trimIncreaseBtn.addEventListener('click', () => nudgeTrim(1));
   elements.bluetoothSwitch.addEventListener('change', () => {
     if (!elements.bluetoothSwitch.checked && state.transport === 'ble' &&
         !window.confirm('Disable Bluetooth advertising? You will need USB serial to enable advertising again after disconnecting.')) {

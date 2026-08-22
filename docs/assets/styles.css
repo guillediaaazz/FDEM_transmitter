@@ -69,6 +69,10 @@ fieldset { min-inline-size: 0; margin: 1.4rem 0 0; padding: 0; border: 0; }
 .number-with-unit input { width: 100%; min-width: 0; padding: .45rem .25rem .45rem .6rem; border: 0; outline: 0; background: transparent; color: var(--text); text-align: right; }
 .number-with-unit span { padding: 0 .55rem 0 .3rem; color: var(--muted); font-size: .8rem; }
 input[type="range"] { width: 100%; height: 1.8rem; margin: .45rem 0 0; accent-color: var(--cyan); }
+.trim-slider-row { display: flex; width: 100%; gap: .55rem; align-items: center; margin-top: .45rem; }
+.trim-slider-row input[type="range"] { flex: 1 1 auto; min-width: 0; margin: 0; }
+.trim-step-button { flex: 0 0 2.4rem; width: 2.4rem; height: 2.4rem; padding: 0; border: 1px solid var(--line); border-radius: .55rem; color: var(--text); background: var(--surface-hover); font-size: 1.3rem; font-weight: 800; line-height: 1; }
+.trim-step-button:hover { border-color: var(--cyan); color: var(--cyan); }
 .segmented-control { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; margin-top: .55rem; padding: .28rem; border: 1px solid var(--line); border-radius: .7rem; background: #081521; }
 .segment { min-height: 2.55rem; border: 0; border-radius: .45rem; color: var(--muted); background: transparent; font-weight: 750; }
 .segment.is-active { color: #00131c; background: var(--cyan); }
