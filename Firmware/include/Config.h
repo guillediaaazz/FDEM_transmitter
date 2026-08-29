@@ -46,7 +46,7 @@ constexpr bool USB_TELEMETRY_ENABLED_AT_BOOT = false;
 
 // ---- Signal path ----
 constexpr float DDS_REFERENCE_CLOCK_HZ = 16000000.0f;
-constexpr float DDS_OUTPUT_VPP = 0.606f;
+constexpr float DDS_OUTPUT_VPP = 0.605f;
 constexpr float DDS_OUTPUT_OFFSET = 0.046f;  // It does not reach 0 V. It goes from 0.037 V to 0.647 V.
 constexpr float PRE_DIGIPOT_BUFFER_GAIN = 2.0f;
 
@@ -94,7 +94,7 @@ constexpr float BATTERY_FULL_VOLTS = 12.6f;
 // ---- LED PWM ----
 constexpr uint32_t LED_PWM_FREQUENCY_HZ = 5000;
 constexpr uint8_t LED_PWM_RESOLUTION_BITS = 8;
-constexpr uint8_t LED_PWM_MAX_DUTY = 255;
+constexpr uint8_t LED_PWM_MAX_DUTY = 220;
 constexpr uint32_t BLE_ADVERTISING_BLINK_MS = 500;
 
 inline bool pinAssigned(int pin) { return pin != PIN_UNASSIGNED; }

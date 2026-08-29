@@ -138,7 +138,27 @@ void CommsManager::sendUsb(const String& message) {
 }
 
 void CommsManager::sendBle(const String& message) {
-  if (txCharacteristic_ == nullptr || !bluetoothConnected_) return;
-  txCharacteristic_->setValue(message.c_str());
-  txCharacteristic_->notify();
+  if (server_ == nullptr || txCharacteristic_ == nullptr || !bluetoothConnected_) return;
+
+  // BLE notifications preserve packet boundaries, but the controller protocol
+  // is line based and may span several packets when a peer uses the minimum
+  // ATT MTU. Terminate every logical response and split it to fit each peer.
+  String line = message;
+  while (line.endsWith("\r") || line.endsWith("\n")) line.remove(line.length() - 1);
+  line += '\n';
+  txCharacteristic_->setValue(line.c_str());
+
+  const std::vector<uint16_t> peers = server_->getPeerDevices();
+  for (const uint16_t connectionHandle : peers) {
+    const uint16_t mtu = server_->getPeerMTU(connectionHandle);
+    const size_t maximumChunkLength = mtu > 3 ? static_cast<size_t>(mtu - 3) : 1;
+    size_t offset = 0;
+    while (offset < line.length()) {
+      const size_t remaining = line.length() - offset;
+      const size_t chunkLength = remaining < maximumChunkLength ? remaining : maximumChunkLength;
+      txCharacteristic_->notify(
+          reinterpret_cast<const uint8_t*>(line.c_str() + offset), chunkLength, connectionHandle);
+      offset += chunkLength;
+    }
+  }
 }

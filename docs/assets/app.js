@@ -18,7 +18,7 @@ const elements = {
   bluetoothSwitch: $('bluetoothSwitch'), statusBtn: $('statusBtn'), helpBtn: $('helpBtn'),
   outputIndicator: $('outputIndicator'), positiveRail: $('positiveRail'), negativeRail: $('negativeRail'), batteryPercent: $('batteryPercent'),
   batteryMeter: $('batteryMeter'), telemetryAge: $('telemetryAge'), statusWaveform: $('statusWaveform'),
-  statusAutoCal: $('statusAutoCal'), statusCalibration: $('statusCalibration'), statusBluetooth: $('statusBluetooth'),
+  statusManualTrim: $('statusManualTrim'), statusBluetooth: $('statusBluetooth'),
   logOutput: $('logOutput'), clearLogBtn: $('clearLogBtn')
 };
 
@@ -184,7 +184,13 @@ function appendIncoming(text) {
   while (newline >= 0) {
     const message = state.receiveBuffer.slice(0, newline).trim();
     state.receiveBuffer = state.receiveBuffer.slice(newline + 1);
-    if (message) handleMessage(message);
+    if (message) {
+      try {
+        handleMessage(message);
+      } catch (error) {
+        log('!', `Message processing failed: ${error.message || error}`);
+      }
+    }
     newline = state.receiveBuffer.indexOf('\n');
   }
 }
@@ -209,6 +215,15 @@ function parseBattery(payload) {
   elements.telemetryAge.textContent = 'Live telemetry';
 }
 
+function renderBatteryUnavailable() {
+  elements.positiveRail.textContent = '—';
+  elements.negativeRail.textContent = '—';
+  elements.batteryPercent.textContent = '—';
+  elements.batteryMeter.style.width = '0%';
+  elements.batteryMeter.style.background = 'var(--muted)';
+  elements.telemetryAge.textContent = 'Battery telemetry unavailable';
+}
+
 function parseStatus(payload) {
   const fields = Object.fromEntries(payload.split(',').map((entry) => {
     const separator = entry.indexOf(':');
@@ -227,6 +242,7 @@ function parseStatus(payload) {
   if (fields.TRIM !== undefined) renderTrim(-Number.parseInt(fields.TRIM, 10));
   if (fields.BLT === '0' || fields.BLT === '1') elements.bluetoothSwitch.checked = fields.BLT === '1';
   if (fields.BATP && fields.BATN && fields.BAT) parseBattery(`${fields.BATP},${fields.BATN},${fields.BAT}`);
+  else if (fields.BAT === 'UNAVAILABLE') renderBatteryUnavailable();
   elements.statusWaveform.textContent = fields.W === 'T' ? 'Triangle' : fields.W === 'S' ? 'Sine' : '—';
   elements.statusBluetooth.textContent = fields.BLT === '1' ? 'Advertising' : fields.BLT === '0' ? 'Off' : '—';
   state.deviceStateKnown = true;
