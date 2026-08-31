@@ -83,9 +83,10 @@ constexpr uint16_t DAC_MAX_CODE = 4095;
 constexpr float FEEDBACK_BIAS_DAC_VOLTS = 0.2895f;  // MCP4822 channel A, nominal hardware bias.
 
 // ---- Manual output-offset trim ----
-// The AD5160 W-to-B wiper resistance leaves a small signal at code 0. Add
-// this DAC-B voltage only while A:0 is selected to subtract that residual.
-constexpr float DIGIPOT_MUTE_RESIDUAL_DAC_B_VOLTS = 0.006f;
+// The attenuator model already includes the AD5160 60 Ohm wiper resistance,
+// including at code 0. Leave this at zero unless scope measurements identify
+// an additional mute-only residual not represented by that model.
+constexpr float DIGIPOT_MUTE_RESIDUAL_DAC_B_VOLTS = 0.0f;
 // User-controlled signed adjustment added directly to the DAC-B code. It is
 // saved in Preferences and restored after boot.
 constexpr int MANUAL_DAC_B_TRIM_LIMIT_CODES = 255;
