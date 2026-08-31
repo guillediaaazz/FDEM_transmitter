@@ -118,6 +118,8 @@
           </div>
 
           <div class="control-actions">
+            <button id="calibrateBtn" type="button" class="button button-warning">Run gain calibration</button>
+            <button id="clearCalibrationBtn" type="button" class="button button-danger">Clear gain calibration</button>
             <button id="statusBtn" type="button" class="button button-quiet">Refresh status</button>
             <button id="helpBtn" type="button" class="button button-quiet">Protocol help</button>
           </div>
@@ -143,6 +145,7 @@
         <dl class="device-status">
           <div><dt>Waveform</dt><dd id="statusWaveform">—</dd></div>
           <div><dt>Output trim</dt><dd id="statusManualTrim">—</dd></div>
+          <div><dt>Gain calibration</dt><dd id="statusCalibration">—</dd></div>
           <div><dt>Bluetooth</dt><dd id="statusBluetooth">—</dd></div>
         </dl>
       </section>
@@ -155,6 +158,6 @@
     </details>
   </main>
   <noscript><p class="noscript">This controller requires JavaScript to communicate with the transmitter.</p></noscript>
-  <script type="module" src="./assets/app.js?v=7"></script>
+  <script type="module" src="./assets/app.js?v=11"></script>
 </body>
 </html>

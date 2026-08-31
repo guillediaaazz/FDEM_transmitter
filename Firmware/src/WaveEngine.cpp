@@ -37,7 +37,8 @@ bool WaveEngine::canProduceAmplitude(float requestedVpp) const {
     return false;
   }
   const float prePowerVpp = requestedVpp / Config::POWER_STAGE_GAIN_V_V;
-  return prePowerVpp <= Config::DDS_OUTPUT_VPP * Config::PRE_DIGIPOT_BUFFER_GAIN + 0.0001f;
+  const float maximumAttenuation = attenuatorFractionForWiper(Config::DIGIPOT_MAX_SIGNAL_WIPER);
+  return prePowerVpp <= Config::DDS_OUTPUT_VPP * Config::PRE_DIGIPOT_BUFFER_GAIN * maximumAttenuation + 0.0001f;
 }
 
 bool WaveEngine::setAmplitude(float requestedVpp) {
@@ -57,6 +58,32 @@ bool WaveEngine::setManualOffsetTrimCodes(int codes) {
   manualOffsetTrimCodes_ = codes;
   if (ready_) applyOffsetDac();
   return true;
+}
+
+bool WaveEngine::canSetOffsetGainScale(float scale) const {
+  return isfinite(scale) && scale >= Config::OFFSET_GAIN_CALIBRATION_MIN_SCALE &&
+         scale <= Config::OFFSET_GAIN_CALIBRATION_MAX_SCALE;
+}
+
+bool WaveEngine::setOffsetGainScale(float scale) {
+  if (!canSetOffsetGainScale(scale)) return false;
+  offsetGainScale_ = scale;
+  if (ready_) applyOffsetDac();
+  return true;
+}
+
+bool WaveEngine::setCalibrationDacBAdjustmentCodes(int codes) {
+  const int nominalCode = dac_.voltageToCode(nominalDacBVolts());
+  const int outputCode = nominalCode + manualOffsetTrimCodes_ + codes;
+  if (outputCode < 0 || outputCode > Config::DAC_MAX_CODE) return false;
+  calibrationDacBAdjustmentCodes_ = codes;
+  if (ready_) applyOffsetDac();
+  return true;
+}
+
+void WaveEngine::clearCalibrationDacBAdjustment() {
+  calibrationDacBAdjustmentCodes_ = 0;
+  if (ready_) applyOffsetDac();
 }
 
 void WaveEngine::setWaveform(Waveform waveform) {
@@ -91,7 +118,9 @@ WaveEngine::OffsetDiagnostics WaveEngine::offsetDiagnostics() const {
       attenuator_.wiper(),
       attenuatorFraction(),
       nominalDacBVolts(),
+      offsetGainScale_,
       manualOffsetTrimCodes_,
+      calibrationDacBAdjustmentCodes_,
       dac_.code(MCP4822::Channel::A),
       dac_.codeToVoltage(dac_.code(MCP4822::Channel::A)),
       dacBCode,
@@ -102,6 +131,9 @@ WaveEngine::OffsetDiagnostics WaveEngine::offsetDiagnostics() const {
 bool WaveEngine::isOutputActive() const { return requestedAmplitudeVpp_ > 0.0f; }
 
 float WaveEngine::appliedAmplitudeVpp() const {
+  // A:0 remains the user-visible safe mute state even though code 0 has a
+  // small physical residual that is handled by the dedicated DAC-B term.
+  if (requestedAmplitudeVpp_ <= 0.0f) return 0.0f;
   const float sourceVpp = Config::DDS_OUTPUT_VPP * Config::PRE_DIGIPOT_BUFFER_GAIN;
   return max(0.0f, sourceVpp * attenuatorFraction() * Config::POWER_STAGE_GAIN_V_V);
 }
@@ -110,38 +142,66 @@ float WaveEngine::manualOffsetTrimOutputVolts() const {
   return manualOffsetTrimCodes_ * dac_.codeToVoltage(1) * Config::POWER_STAGE_GAIN_V_V;
 }
 
+float WaveEngine::unscaledSignalDacBVolts() const { return signalDacBVoltsBeforeGain(); }
+
+float WaveEngine::dacBVoltsPerCode() const { return dac_.codeToVoltage(1); }
+
 void WaveEngine::applyAmplitude() {
   const float sourceVpp = Config::DDS_OUTPUT_VPP * Config::PRE_DIGIPOT_BUFFER_GAIN;
   const float prePowerVpp = requestedAmplitudeVpp_ / Config::POWER_STAGE_GAIN_V_V;
-  const float fraction = constrain(prePowerVpp / sourceVpp, 0.0f, 1.0f);
-  const uint8_t wiper = static_cast<uint8_t>(Config::DIGIPOT_MUTE_WIPER +
-      fraction * (Config::DIGIPOT_MAX_SIGNAL_WIPER - Config::DIGIPOT_MUTE_WIPER) + 0.5f);
+  const float requestedFraction = constrain(prePowerVpp / sourceVpp, 0.0f, 1.0f);
+  // With A as the input, B grounded, and W as the output, the divider ratio
+  // is RWB / (RWB + RWA). Inverting that ratio selects the nearest AD5160
+  // code for the requested amplitude while retaining the 60 Ohm wiper term.
+  const float resistanceToB = requestedFraction *
+      (Config::DIGIPOT_END_TO_END_RESISTANCE_OHMS + Config::DIGIPOT_WIPER_RESISTANCE_OHMS);
+  const float code = (resistanceToB - Config::DIGIPOT_WIPER_RESISTANCE_OHMS) *
+      Config::DIGIPOT_RESISTOR_POSITIONS / Config::DIGIPOT_END_TO_END_RESISTANCE_OHMS;
+  const uint8_t wiper = static_cast<uint8_t>(constrain(
+      static_cast<int>(lroundf(code)), static_cast<int>(Config::DIGIPOT_MUTE_WIPER),
+      static_cast<int>(Config::DIGIPOT_MAX_SIGNAL_WIPER)));
   attenuator_.setWiper(wiper);
   applyOffsetDac();
 }
 
 void WaveEngine::applyOffsetDac() {
   const int nominalCode = dac_.voltageToCode(nominalDacBVolts());
-  const int outputCode = constrain(nominalCode + manualOffsetTrimCodes_, 0, static_cast<int>(Config::DAC_MAX_CODE));
+  const int outputCode = constrain(nominalCode + manualOffsetTrimCodes_ + calibrationDacBAdjustmentCodes_,
+                                   0, static_cast<int>(Config::DAC_MAX_CODE));
   dac_.setCode(MCP4822::Channel::B, static_cast<uint16_t>(outputCode));
 }
 
 float WaveEngine::attenuatorFraction() const {
-  const int span = Config::DIGIPOT_MAX_SIGNAL_WIPER - Config::DIGIPOT_MUTE_WIPER;
-  if (span <= 0) return 0.0f;
-  return constrain((static_cast<int>(attenuator_.wiper()) - Config::DIGIPOT_MUTE_WIPER) /
-                       static_cast<float>(span),
-                   0.0f, 1.0f);
+  return attenuatorFractionForWiper(attenuator_.wiper());
 }
 
-float WaveEngine::nominalDacBVolts() const {
+float WaveEngine::attenuatorFractionForWiper(uint8_t wiper) const {
+  if (Config::DIGIPOT_END_TO_END_RESISTANCE_OHMS <= 0.0f ||
+      Config::DIGIPOT_RESISTOR_POSITIONS <= 0.0f) {
+    return 0.0f;
+  }
+  const float code = constrain(static_cast<float>(wiper),
+                               static_cast<float>(Config::DIGIPOT_MUTE_WIPER),
+                               static_cast<float>(Config::DIGIPOT_MAX_SIGNAL_WIPER));
+  const float resistanceWb = code * Config::DIGIPOT_END_TO_END_RESISTANCE_OHMS /
+      Config::DIGIPOT_RESISTOR_POSITIONS + Config::DIGIPOT_WIPER_RESISTANCE_OHMS;
+  const float resistanceWa = (Config::DIGIPOT_RESISTOR_POSITIONS - code) *
+      Config::DIGIPOT_END_TO_END_RESISTANCE_OHMS / Config::DIGIPOT_RESISTOR_POSITIONS;
+  return constrain(resistanceWb / (resistanceWb + resistanceWa), 0.0f, 1.0f);
+}
+
+float WaveEngine::signalDacBVoltsBeforeGain() const {
   // The subtractor must remove the actual DC level at its signal input, not
   // merely half of the requested Vpp. AD9837 VOUT does not begin at 0 V: its
   // specified low-level offset is amplified by the pre-digipot buffer and
   // attenuated by the same AD5160 wiper setting as the waveform. Using the
   // discrete wiper fraction keeps DAC-B aligned with the Vpp truly applied.
   const float ddsCentreVolts = Config::DDS_OUTPUT_OFFSET + Config::DDS_OUTPUT_VPP * 0.5f;
-  float offsetVolts = ddsCentreVolts * Config::PRE_DIGIPOT_BUFFER_GAIN * attenuatorFraction();
+  return ddsCentreVolts * Config::PRE_DIGIPOT_BUFFER_GAIN * attenuatorFraction();
+}
+
+float WaveEngine::nominalDacBVolts() const {
+  float offsetVolts = signalDacBVoltsBeforeGain() * offsetGainScale_;
   if (requestedAmplitudeVpp_ <= 0.0f) {
     offsetVolts += Config::DIGIPOT_MUTE_RESIDUAL_DAC_B_VOLTS;
   }

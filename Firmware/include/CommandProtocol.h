@@ -9,7 +9,7 @@
 // Platform-independent parser so the serial/BLE grammar can be unit-tested on
 // a desktop. Hardware validation and command execution remain in main.cpp.
 namespace CommandProtocol {
-enum class Type { Help, Status, Settings };
+enum class Type { Help, Status, Calibrate, Settings };
 
 struct Command {
   Type type = Type::Settings;
@@ -75,6 +75,10 @@ inline bool parse(const std::string& raw, Command& command, std::string& error) 
   }
   if (line == "STATUS") {
     command.type = Type::Status;
+    return true;
+  }
+  if (line == "CAL") {
+    command.type = Type::Calibrate;
     return true;
   }
   if (line.empty()) {

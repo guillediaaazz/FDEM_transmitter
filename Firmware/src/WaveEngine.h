@@ -14,7 +14,9 @@ class WaveEngine {
     uint8_t wiper;
     float attenuationFraction;
     float nominalDacBVolts;
+    float offsetGainScale;
     int manualTrimCodes;
+    int calibrationAdjustmentCodes;
     uint16_t dacACode;
     float dacAVolts;
     uint16_t dacBCode;
@@ -26,6 +28,9 @@ class WaveEngine {
   bool setFrequency(float frequencyHz);
   bool setAmplitude(float requestedVpp);
   bool setManualOffsetTrimCodes(int codes);
+  bool setOffsetGainScale(float scale);
+  bool setCalibrationDacBAdjustmentCodes(int codes);
+  void clearCalibrationDacBAdjustment();
   void setWaveform(Waveform waveform);
   void runDdsKnownGoodTest();
   void setDdsTraceEnabled(bool enabled);
@@ -35,9 +40,13 @@ class WaveEngine {
 
   bool canProduceAmplitude(float requestedVpp) const;
   bool canSetManualOffsetTrimCodes(int codes) const;
+  bool canSetOffsetGainScale(float scale) const;
   bool isOutputActive() const;
   int manualOffsetTrimCodes() const { return manualOffsetTrimCodes_; }
+  float offsetGainScale() const { return offsetGainScale_; }
   float manualOffsetTrimOutputVolts() const;
+  float unscaledSignalDacBVolts() const;
+  float dacBVoltsPerCode() const;
   float frequencyHz() const { return frequencyHz_; }
   float requestedAmplitudeVpp() const { return requestedAmplitudeVpp_; }
   float appliedAmplitudeVpp() const;
@@ -47,6 +56,8 @@ class WaveEngine {
   void applyAmplitude();
   void applyOffsetDac();
   float attenuatorFraction() const;
+  float attenuatorFractionForWiper(uint8_t wiper) const;
+  float signalDacBVoltsBeforeGain() const;
   float nominalDacBVolts() const;
 
   AD9837 dds_;
@@ -56,5 +67,7 @@ class WaveEngine {
   float requestedAmplitudeVpp_ = 0.0f;
   Waveform waveform_ = Waveform::Sine;
   int manualOffsetTrimCodes_ = 0;
+  int calibrationDacBAdjustmentCodes_ = 0;
+  float offsetGainScale_ = 1.0f;
   bool ready_ = false;
 };

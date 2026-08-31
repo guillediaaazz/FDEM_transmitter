@@ -1,10 +1,10 @@
-const CACHE_NAME = 'fdem-controller-v7';
+const CACHE_NAME = 'fdem-controller-v11';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
   './assets/styles.css?v=6',
-  './assets/app.js?v=7',
+  './assets/app.js?v=11',
   './assets/icons/fdem-192.svg',
   './assets/icons/fdem-512.svg'
 ];

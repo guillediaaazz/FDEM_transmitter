@@ -15,10 +15,10 @@ const elements = {
   controlFieldset: $('controlFieldset'), frequencyNumber: $('frequencyNumber'), frequencyRange: $('frequencyRange'),
   amplitudeNumber: $('amplitudeNumber'), amplitudeRange: $('amplitudeRange'), offsetTrimRange: $('offsetTrimRange'), offsetTrimValue: $('offsetTrimValue'),
   trimDecreaseBtn: $('trimDecreaseBtn'), trimIncreaseBtn: $('trimIncreaseBtn'),
-  bluetoothSwitch: $('bluetoothSwitch'), statusBtn: $('statusBtn'), helpBtn: $('helpBtn'),
+  bluetoothSwitch: $('bluetoothSwitch'), calibrateBtn: $('calibrateBtn'), clearCalibrationBtn: $('clearCalibrationBtn'), statusBtn: $('statusBtn'), helpBtn: $('helpBtn'),
   outputIndicator: $('outputIndicator'), positiveRail: $('positiveRail'), negativeRail: $('negativeRail'), batteryPercent: $('batteryPercent'),
   batteryMeter: $('batteryMeter'), telemetryAge: $('telemetryAge'), statusWaveform: $('statusWaveform'),
-  statusManualTrim: $('statusManualTrim'), statusBluetooth: $('statusBluetooth'),
+  statusManualTrim: $('statusManualTrim'), statusCalibration: $('statusCalibration'), statusBluetooth: $('statusBluetooth'),
   logOutput: $('logOutput'), clearLogBtn: $('clearLogBtn')
 };
 
@@ -32,6 +32,7 @@ const state = {
   waveform: 'S',
   settingsTimer: null,
   trimTimer: null,
+  calibrationRunning: false,
   deviceStateKnown: false,
   lastTelemetryAt: 0,
   updateRequested: false,
@@ -66,7 +67,7 @@ function setConnectionStatus(status, detail) {
 function setConnected(connected, transport = null) {
   state.connected = connected;
   state.transport = connected ? transport : null;
-  elements.controlFieldset.disabled = !connected;
+  elements.controlFieldset.disabled = !connected || state.calibrationRunning;
   elements.disconnectBtn.disabled = !connected;
   elements.connectBleBtn.disabled = connected || !('bluetooth' in navigator);
   elements.connectUsbBtn.disabled = connected || !('serial' in navigator);
@@ -78,6 +79,12 @@ function setConnected(connected, transport = null) {
     state.deviceStateKnown = false;
     renderOutputState();
   }
+}
+
+function setCalibrationRunning(running, detail = '') {
+  state.calibrationRunning = running;
+  elements.controlFieldset.disabled = !state.connected || running;
+  if (detail) elements.statusCalibration.textContent = detail;
 }
 
 function formatNumber(value, decimals = 2) {
@@ -199,7 +206,11 @@ function handleMessage(message) {
   log('<', message);
   if (message.startsWith('BAT:')) parseBattery(message.slice(4));
   else if (message.startsWith('STATUS:')) parseStatus(message.slice(7));
+  else if (message.startsWith('CAL:STEP:')) handleCalibrationProgress(message.slice(9));
   else if (message.startsWith('OK:') || message === 'OK') parseAcknowledgement(message);
+  else if (message.startsWith('ERR:CAL:')) {
+    setCalibrationRunning(false, `Failed: ${message.slice(8).replaceAll('_', ' ')}`);
+  }
 }
 
 function parseBattery(payload) {
@@ -240,6 +251,8 @@ function parseStatus(payload) {
   if (fields.W === 'S' || fields.W === 'T') setWaveform(fields.W);
   // The device reports DAC-B codes; display their inverse output effect.
   if (fields.TRIM !== undefined) renderTrim(-Number.parseInt(fields.TRIM, 10));
+  if (fields.CAL === 'RUNNING') setCalibrationRunning(true, 'Running');
+  else if (fields.CAL === 'IDLE') setCalibrationRunning(false, `Idle · gain ${fields.CAL_GAIN || '—'}`);
   if (fields.BLT === '0' || fields.BLT === '1') elements.bluetoothSwitch.checked = fields.BLT === '1';
   if (fields.BATP && fields.BATN && fields.BAT) parseBattery(`${fields.BATP},${fields.BATN},${fields.BAT}`);
   else if (fields.BAT === 'UNAVAILABLE') renderBatteryUnavailable();
@@ -250,6 +263,15 @@ function parseStatus(payload) {
 }
 
 function parseAcknowledgement(message) {
+  if (message.startsWith('OK:CAL:STARTED:')) setCalibrationRunning(true, 'Running · sweep started');
+  if (message.startsWith('OK:CAL:COMPLETE:GAIN:')) {
+    setCalibrationRunning(false, `Complete · gain ${message.slice('OK:CAL:COMPLETE:GAIN:'.length)}`);
+    sendCommand('STATUS\n');
+  }
+  if (message.startsWith('OK:CAL:CLEAR:')) {
+    setCalibrationRunning(false, 'Idle · gain 1.00000');
+    sendCommand('STATUS\n');
+  }
   const amplitude = message.match(/:A:([\d.]+)/);
   if (amplitude) {
     elements.amplitudeNumber.value = amplitude[1];
@@ -257,6 +279,10 @@ function parseAcknowledgement(message) {
     state.deviceStateKnown = true;
     renderOutputState();
   }
+}
+
+function handleCalibrationProgress(progress) {
+  setCalibrationRunning(true, progress === 'PERTURB' ? 'Running · measuring DAC response' : `Running · sweep ${progress}`);
 }
 
 function renderOutputState() {
@@ -387,6 +413,14 @@ function configureControls() {
   elements.offsetTrimRange.addEventListener('change', () => scheduleTrim(true));
   elements.trimDecreaseBtn.addEventListener('click', () => nudgeTrim(-1));
   elements.trimIncreaseBtn.addEventListener('click', () => nudgeTrim(1));
+  elements.calibrateBtn.addEventListener('click', () => {
+    if (!window.confirm('Run gain calibration? The transmitter will sweep through the full configured output range for about 56 seconds.')) return;
+    sendCommand('CAL\n');
+  });
+  elements.clearCalibrationBtn.addEventListener('click', () => {
+    if (!window.confirm('Clear the saved amplitude-dependent gain calibration? The manual output trim will not change.')) return;
+    sendCommand('CAL:CLEAR\n');
+  });
   elements.bluetoothSwitch.addEventListener('change', () => {
     if (!elements.bluetoothSwitch.checked && state.transport === 'ble' &&
         !window.confirm('Disable Bluetooth advertising? You will need USB serial to enable advertising again after disconnecting.')) {

@@ -21,8 +21,8 @@ constexpr int PIN_MCP4822_CS = 25;
 
 constexpr int PIN_ADC_POSITIVE_RAIL = 36;
 constexpr int PIN_ADC_NEGATIVE_RAIL = 39;
-// Reserved for a future offset-feedback experiment. It is not read by the
-// current firmware, which uses only the manual DAC-B trim below.
+// Used only during the explicit CAL gain-calibration routine. Normal output
+// operation uses no ADC feedback or automatic offset correction.
 constexpr int PIN_ADC_OFFSET_FEEDBACK = 34;
 
 constexpr int PIN_LED_POSITIVE_GREEN = 18;
@@ -36,6 +36,9 @@ constexpr int PIN_LED_BLUETOOTH = 14;
 constexpr uint32_t SERIAL_BAUD = 115200;
 constexpr char BLE_DEVICE_NAME[] = "FDEM-TX";
 constexpr bool BLE_ENABLED_AT_BOOT = true;
+constexpr char PREFERENCES_NAMESPACE[] = "fdem-tx";
+constexpr char MANUAL_TRIM_PREFERENCE_KEY[] = "manual-trim";
+constexpr char OFFSET_GAIN_PREFERENCE_KEY[] = "offset-gain";
 constexpr char NUS_SERVICE_UUID[] = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
 constexpr char NUS_RX_UUID[] = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";  // Client -> ESP32
 constexpr char NUS_TX_UUID[] = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";  // ESP32 -> client
@@ -66,6 +69,11 @@ constexpr bool DDS_RESET_AROUND_FREQUENCY_WRITES = false;
 // AD5160 wiring: A = signal input, B = ground, W = output.
 constexpr uint8_t DIGIPOT_MUTE_WIPER = 0;
 constexpr uint8_t DIGIPOT_MAX_SIGNAL_WIPER = 255;
+// AD5160-10: 10 kOhm end-to-end resistance and nominal 60 Ohm W-to-tap
+// contact resistance. The device has 256 resistor positions (codes 0..255).
+constexpr float DIGIPOT_END_TO_END_RESISTANCE_OHMS = 10000.0f;
+constexpr float DIGIPOT_WIPER_RESISTANCE_OHMS = 60.0f;
+constexpr float DIGIPOT_RESISTOR_POSITIONS = 256.0f;
 
 // ---- MCP4822 ----
 // Effective MCP4822 reference at the DAC output. Keep 2.048 V initially;
@@ -79,8 +87,26 @@ constexpr float FEEDBACK_BIAS_DAC_VOLTS = 0.2895f;  // MCP4822 channel A, nomina
 // this DAC-B voltage only while A:0 is selected to subtract that residual.
 constexpr float DIGIPOT_MUTE_RESIDUAL_DAC_B_VOLTS = 0.006f;
 // User-controlled signed adjustment added directly to the DAC-B code. It is
-// deliberately volatile and always starts at zero after boot.
+// saved in Preferences and restored after boot.
 constexpr int MANUAL_DAC_B_TRIM_LIMIT_CODES = 255;
+
+// ---- One-shot amplitude-dependent offset-gain calibration ----
+// The routine uses the offset-feedback ADC only when CAL is explicitly run;
+// there is no automatic background correction.
+constexpr uint8_t OFFSET_GAIN_CALIBRATION_POINTS = 5;
+constexpr float OFFSET_GAIN_CALIBRATION_MAX_OUTPUT_VPP = MAX_OUTPUT_VPP;
+// The heavy feedback low-pass filter needs roughly 8 s to settle after each
+// amplitude or temporary DAC-B perturbation change.
+constexpr uint32_t OFFSET_GAIN_CALIBRATION_SETTLE_MS = 8000;
+constexpr uint8_t OFFSET_GAIN_CALIBRATION_SAMPLES = 16;
+constexpr int OFFSET_GAIN_CALIBRATION_DAC_STEP_CODES = 64;
+constexpr float OFFSET_GAIN_CALIBRATION_MIN_DAC_RESPONSE_V_PER_V = 0.010f;
+constexpr float OFFSET_GAIN_CALIBRATION_MAX_FIT_RMSE_VOLTS = 0.020f;
+// End-of-range ADC values cannot provide a trustworthy feedback slope.
+constexpr float OFFSET_GAIN_CALIBRATION_ADC_MIN_VOLTS = 0.05f;
+constexpr float OFFSET_GAIN_CALIBRATION_ADC_MAX_VOLTS = 3.25f;
+constexpr float OFFSET_GAIN_CALIBRATION_MIN_SCALE = 0.75f;
+constexpr float OFFSET_GAIN_CALIBRATION_MAX_SCALE = 1.25f;
 
 // ---- ESP32 ADC and battery monitoring ----
 constexpr float ADC_VOLTAGE_SCALE = 1.0f;
