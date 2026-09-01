@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fdem-tx-controller"
+version = "1.0.0"
+description = "Standalone Windows controller for the FDEM transmitter"
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+    "bleak==3.0.1",
+    "customtkinter==5.2.2",
+    "Pillow==11.3.0",
+    "pyserial==3.5",
+]
+
+[project.gui-scripts]
+fdem-tx-controller = "fdem_controller.app:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -p no:cacheprovider"

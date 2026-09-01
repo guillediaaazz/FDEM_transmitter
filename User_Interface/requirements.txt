@@ -1,0 +1,5 @@
+bleak==3.0.1
+customtkinter==5.2.2
+Pillow==11.3.0
+pyserial==3.5
+
