@@ -11936,16 +11936,6 @@
 	)
 	(wire
 		(pts
-			(xy 323.85 113.03) (xy 334.01 113.03)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "99426754-25fd-4bd2-b7e6-725e227f0914")
-	)
-	(wire
-		(pts
 			(xy 118.11 54.61) (xy 118.11 55.88)
 		)
 		(stroke
@@ -12433,6 +12423,16 @@
 			(type default)
 		)
 		(uuid "b5c8b857-e69f-409c-8fb5-bfd42c682dae")
+	)
+	(wire
+		(pts
+			(xy 323.85 113.03) (xy 334.01 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b61bb746-62c3-4269-9d37-1c49229eed8a")
 	)
 	(wire
 		(pts
@@ -13885,7 +13885,7 @@
 		)
 	)
 	(global_label "Bat-"
-		(shape input)
+		(shape output)
 		(at 67.31 125.73 0)
 		(fields_autoplaced yes)
 		(effects
@@ -14437,7 +14437,7 @@
 		)
 	)
 	(global_label "Bat+"
-		(shape input)
+		(shape output)
 		(at 67.31 99.06 0)
 		(fields_autoplaced yes)
 		(effects

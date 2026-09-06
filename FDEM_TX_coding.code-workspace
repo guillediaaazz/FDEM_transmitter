@@ -15,6 +15,9 @@
 		{
 			"name": "Firmware",
 			"path": "Firmware"
+		},
+		{
+			"path": "../MEMORIA Y PRESENTACIÓN/Plots"
 		}
 	],
 	"settings": {
